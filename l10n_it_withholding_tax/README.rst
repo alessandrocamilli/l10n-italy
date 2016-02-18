@@ -8,6 +8,11 @@ Italian Withholding Tax
 
 Module for Italian Withholding Tax: Ritenute d'acconto
 
+Gestisce le ritenute sulle fatture e sui pagamenti
+
+Usage
+=====
+
 * Go to ...
 
 .. image:: https://odoo-community.org/website/image/ir.attachment/5784_f2813bd/datas
