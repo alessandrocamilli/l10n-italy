@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 ##############################################################################
 #    
-#    Author: Alessandro Camilli (alessandrocamilli@openforce.it)
-#    Copyright (C) 2016
+#    Author: Alessandro Camilli (a.camilli@yahoo.it)
+#    Copyright (C) 2014
 #    Associazione OpenERP Italia (<http://www.openerp-italia.org>)
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -924,6 +924,7 @@ class spesometro_comunicazione(orm.Model):
                       'trimestre' : params.get('trimestre', False),
                       'progressivo_telematico' : progressivo_telematico or False,
                       'tipo_fornitore' : params.get('tipo_fornitore', False),
+                      'soggetto_codice_carica' : params.get('soggetto_codice_carica', False),
                       'formato_dati' : params.get('formato_dati', False),
                       'soggetto_codice_fiscale' : company.partner_id and company.partner_id.fiscalcode or '',  
                       'soggetto_partitaIVA' : partita_iva,

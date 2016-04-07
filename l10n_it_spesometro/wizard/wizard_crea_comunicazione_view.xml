@@ -12,6 +12,7 @@
                     <newline/>
                     <field name="tipo_fornitore"/>
                     <field name="partner_intermediario" attrs="{'invisible': [('tipo_fornitore', '=', '01')], 'required': [('tipo_fornitore', '=', '10')]}"/>
+                    <field name="soggetto_codice_carica"/>
                     <newline/>
                     <separator colspan="4"/>
                     <field name="periodo"/>
