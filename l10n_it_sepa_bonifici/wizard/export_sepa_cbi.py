@@ -31,12 +31,6 @@ import base64
 logger = logging.getLogger(__name__)
 
 
-class res_partner_bank(models.Model):
-    _inherit = 'res.partner.bank'
-    
-    cuc_code = fields.Char(string='CUC Code')
-
-
 class BankingExportSepaCbiWizard(models.TransientModel):
     _name = 'banking.export.sepa.cbi.wizard'
     _inherit = ['banking.export.pain']
@@ -107,9 +101,9 @@ class BankingExportSepaCbiWizard(models.TransientModel):
     '''
     """
     @api.model
-    def finalize_sepa_file_creation(self, xml_root, total_amount, 
+    def finalize_sepa_file_creation(self, xml_root, total_amount,
                                     transactions_count, gen_args):
-        ''' 
+        '''
         Extended to avoid control xsd
         '''
         xml_string = etree.tostring(
@@ -125,14 +119,14 @@ class BankingExportSepaCbiWizard(models.TransientModel):
         banking_export_sdd_obj = self.pool['banking.export.sdd']
         #file_id = gen_args['file_obj'].create(
         file_id = banking_export_sdd_obj.create(
-            self._prepare_export_sepa(total_amount, 
-                                      transactions_count, 
+            self._prepare_export_sepa(total_amount,
+                                      transactions_count,
                                       xml_string, gen_args)
             )
-        
+
         self.file_id = file_id
         self.state = 'finish'
-        
+
         action = {
             'name': 'SEPA File',
             'type': 'ir.actions.act_window',
@@ -181,7 +175,7 @@ class BankingExportSepaCbiWizard(models.TransientModel):
             'target': 'new',
         }
         return action
-    
+
     @api.model
     def generate_initiating_party_block(self, parent_node, gen_args):
         '''
@@ -189,7 +183,7 @@ class BankingExportSepaCbiWizard(models.TransientModel):
         '''
         # Change logic for initiating_party_identifier:
         # Now is CUC code in the partner bank of the company
-        
+
         #my_company_name = self._prepare_field(
         #    'Company Name',
         #    'sepa_export.payment_order_ids[0].mode.bank_id.partner_id.name',
@@ -231,13 +225,13 @@ class BankingExportSepaCbiWizard(models.TransientModel):
                 iniparty_org_other, 'Issr')
             iniparty_org_other_issuer.text = initiating_party_issuer
         return True
-    
+
     @api.model
     def generate_party_agent(self, parent_node, party_type, party_type_label,
             order, party_name, iban, bic, eval_ctx, gen_args, context=None):
-        
+
         #
-        # CBI logic modified for add ABI of debitor 
+        # CBI logic modified for add ABI of debitor
         #
         # ABI code from IBAN
         if party_type == 'Dbtr':
@@ -253,7 +247,7 @@ class BankingExportSepaCbiWizard(models.TransientModel):
                 raise orm.except_orm(
                     _('Error:'),
                     _("Error Bank Code ABI"))
-            
+
             party_agent = etree.SubElement(parent_node, '%sAgt' % party_type)
             party_agent_institution = etree.SubElement(
                 party_agent, 'FinInstnId')
@@ -268,10 +262,10 @@ class BankingExportSepaCbiWizard(models.TransientModel):
         '''
         if party_type == 'Cdtr' and not iban[:2] == 'IT':
             res = super(banking_export_sepa_cbi_wizard, self).generate_party_agent(
-                            parent_node, party_type, party_type_label, order, 
+                            parent_node, party_type, party_type_label, order,
                             party_name, iban, bic, eval_ctx, gen_args)'''
         return True
-    
+
     @api.model
     def generate_creditor_scheme_identification(
             self, parent_node, identification, identification_label,
@@ -292,7 +286,7 @@ class BankingExportSepaCbiWizard(models.TransientModel):
         csi_scheme_name_proprietary.text = scheme_name_proprietary
         '''
         return True
-    
+
     @api.multi
     def create_sepa(self):
         """Creates the SEPA Direct Debit file. That's the important code !"""
@@ -345,7 +339,7 @@ class BankingExportSepaCbiWizard(models.TransientModel):
         # Add tag x cbi
         pain_root = etree.SubElement(pain_root, 'CBIPaymentRequest')
         pain_03_to_05 = \
-            ['pain.001.001.03', 'pain.001.001.04', 'pain.001.001.05', 
+            ['pain.001.001.03', 'pain.001.001.04', 'pain.001.001.05',
              'CBIBdyPaymentRequest.00.04.00']
         # A. Group header
         group_header_1_0, nb_of_transactions_1_6, control_sum_1_7 = \
@@ -465,13 +459,13 @@ class BankingExportSepaCbiWizard(models.TransientModel):
                     payment_identification_2_28_PmtTpInf, 'CtgyPurp')
                 payment_identification_2_28_CtgyPurp_Cd = etree.SubElement(
                     payment_identification_2_28_CtgyPurp, 'Cd')
-                payment_identification_2_28_CtgyPurp_Cd.text = 'SUPP' # generico 
-                
+                payment_identification_2_28_CtgyPurp_Cd.text = 'SUPP' # generico
+
                 # CBI tag InstrId
                 end2end_identification_2_30_InstrId = etree.SubElement(
                     payment_identification_2_28, 'InstrId')
                 end2end_identification_2_30_InstrId.text = line.name
-                
+
                 end2end_identification_2_30 = etree.SubElement(
                     payment_identification_2_28, 'EndToEndId')
                 end2end_identification_2_30.text = self._prepare_field(
@@ -495,7 +489,7 @@ class BankingExportSepaCbiWizard(models.TransientModel):
                             "order line reference '%s').")
                         % (line.ml_inv_ref.number, line.name))
                 self.generate_party_block(
-                    credit_transfer_transaction_info_2_27, 'Cdtr', 'C', 
+                    credit_transfer_transaction_info_2_27, 'Cdtr', 'C',
                     'line.partner_id.name', 'line.bank_id.acc_number',
                     'line.bank_id.bank.bic', {'line': line}, gen_args)
 
@@ -512,7 +506,7 @@ class BankingExportSepaCbiWizard(models.TransientModel):
         else:
             nb_of_transactions_1_6.text = str(transactions_count_1_6)
             control_sum_1_7.text = '%.2f' % amount_control_sum_1_7
-            
+
         #
         # CBI required
         #
@@ -535,7 +529,7 @@ class BankingExportSepaCbiWizard(models.TransientModel):
         # Remove the duplicate node  CtrlSum in payment
         CtrlSum_node = xml_root.xpath('//PmtInf//SeqTp')[0] #CBI required
         CtrlSum_node.getparent().remove(CtrlSum_node) # You can remove node only from parent
-        
+
         #print(etree.tostring(xml_root, pretty_print=True))
         return self.finalize_sepa_file_creation(
             xml_root, total_amount, transactions_count_1_6, gen_args)
