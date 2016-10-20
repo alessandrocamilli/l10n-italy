@@ -194,10 +194,8 @@ class AccountInvoice(models.Model):
                 # update line
                 move_line.write({'withholding_tax_amount': wt_amount})
 
-            # Align with WT statement
-            """
-            for wt_inv_line in inv.withholding_tax_line_ids:
-                wt_inv_line._align_statement()"""
+            # Create WT Statement
+            self.create_wt_statement()
 
         return res
 
@@ -235,6 +233,24 @@ class AccountInvoice(models.Model):
                         tax_grouped[key]['tax'] += val['tax']
                         tax_grouped[key]['base'] += val['base']
         return tax_grouped
+
+    @api.one
+    def create_wt_statement(self):
+        """
+        Create one statement for each withholding tax
+        """
+        wt_statement_obj = self.env['withholding.tax.statement']
+        for inv_wt in self.withholding_tax_line_ids:
+            val = {
+                'date': self.move_id.date,
+                'move_id': self.move_id.id,
+                'invoice_id': self.id,
+                'partner_id': self.partner_id.id,
+                'withholding_tax_id': inv_wt.withholding_tax_id.id,
+                'base': inv_wt.base,
+                'tax': inv_wt.tax,
+            }
+            wt_statement_obj.create(val)
 
 
 class AccountInvoiceLine(models.Model):

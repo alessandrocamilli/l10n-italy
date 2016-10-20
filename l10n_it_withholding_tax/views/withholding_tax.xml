@@ -107,29 +107,39 @@
             <field name="name">view.withholding.tax.statement.form</field>
             <field name="model">withholding.tax.statement</field>
             <field name="arch" type="xml">
+            	
 	            <form string="Withholding Tax statement" version="7.0">
-	            	<group>
-	            		<group>
-	            			<field name="partner_id"/>
-	            			<field name="date"/>
-	            		</group>
-	            		<group>
-	            			<field name="move_id"/>
-	            			<field name="invoice_id"/>
-	            		</group>
-	            	</group>
-					<newline/>	            	
-	            	<group>
-	            		<field name="move_ids" nolabel="1">
-	            			<tree>
-	            				<field name="date"/>
-	            				<field name="withholding_tax_id"/>
-	            				<field name="date_maturity"/>
-	            				<field name="amount"/>
-	            				<field name="state"/>
-	            			</tree>
-	            		</field>	
-	            	</group>
+		            <sheet>	
+		            	<group>
+		            		<group>
+		            			<field name="partner_id"/>
+		            			<field name="withholding_tax_id"/>
+		            			<field name="base"/>
+		            			<field name="tax"/>
+		            		</group>
+		            		<group>
+		            			<field name="date"/>
+		            			<field name="move_id"/>
+		            			<field name="invoice_id"/>
+		            		</group>
+		            	</group>
+						<newline/>
+						<notebook>
+							<page string="WT moves" name="wt_moves">	            	
+				            	<group>
+				            		<field name="move_ids" nolabel="1">
+				            			<tree>
+				            				<field name="date"/>
+				            				<field name="withholding_tax_id"/>
+				            				<field name="date_maturity"/>
+				            				<field name="amount"/>
+				            				<field name="state"/>
+				            			</tree>
+				            		</field>	
+				            	</group>
+			            	</page>
+		            	</notebook>
+		            </sheet>
 	            </form>
             </field>
         </record>

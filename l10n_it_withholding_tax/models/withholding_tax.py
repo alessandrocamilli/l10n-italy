@@ -179,7 +179,7 @@ class withholding_tax_statement(models.Model):
                                          string='Withholding Tax')
     base = fields.Float('Base')
     tax = fields.Float('Tax')
-    amount = fields.Float(string='WT amount', store=True, readonly=True,
+    amount = fields.Float(string='WT amount applied', store=True, readonly=True,
                           compute='_compute_total')
     amount_paid = fields.Float(string='WT amount paid', store=True,
                                readonly=True, compute='_compute_total')
