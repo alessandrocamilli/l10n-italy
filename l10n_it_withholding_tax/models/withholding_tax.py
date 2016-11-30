@@ -199,7 +199,7 @@ class withholding_tax_move(models.Model):
     state = fields.Selection([
         ('due', 'Due'),
         ('paid', 'Paid'),
-    ], 'Status', readonly=True, copy=False, select=True,
+    ], 'Status', readonly=True, copy=False, index=True,
         default='due')
     statement_id = fields.Many2one('withholding.tax.statement', 'Statement')
     date = fields.Date('Date Competence')

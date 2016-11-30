@@ -132,7 +132,7 @@ class AccountInvoice(models.Model):
         store=True, readonly=True)
     amount_net_pay = fields.Float(
         compute='_amount_withholding_tax',
-        digits_compute=dp.get_precision('Account'), string='Net To Pay',
+        digits=dp.get_precision('Account'), string='Net To Pay',
         store=True, readonly=True)
 
     @api.model
