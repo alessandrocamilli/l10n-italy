@@ -7,6 +7,94 @@ from openerp import models, fields, api
 import openerp.addons.decimal_precision as dp
 
 
+class AccountPartialReconcile(models.Model):
+    _inherit = "account.partial.reconcile"
+
+    @api.model
+    def create(self, vals):
+        dp_obj = self.env['decimal.precision']
+        wt_statement_obj = self.env['withholding.tax.statement']
+        reconcile = super(AccountPartialReconcile, self).create(vals)
+        wt_moves = reconcile.generate_wt_moves()
+        return reconcile
+
+    def _prepare_wt_move(self, vals):
+        """
+        Hook to change values before wt move creation
+        """
+        return vals
+
+    @api.model
+    def generate_wt_moves(self):
+
+        dp_obj = self.env['decimal.precision']
+        wt_statement_obj = self.env['withholding.tax.statement']
+        payment_term_obj = self.env['account.payment.term']
+
+        # Reconcile lines
+        line_payment_ids = []
+        line_payment_ids.append(self.debit_move_id.id)
+        line_payment_ids.append(self.credit_move_id.id)
+        domain = [('id', 'in', line_payment_ids)]
+        rec_lines = self.env['account.move.line'].search(domain)
+
+        # Search statements of competence
+        wt_statements = False
+        rec_line_statement = False
+        for rec_line in rec_lines:
+            domain = [('move_id', '=', rec_line.move_id.id)]
+            wt_statements = wt_statement_obj.search(domain)
+            rec_line_statement = rec_line
+        # Search doc competence(The other line_id credit/debit among statement)
+        rec_line_doc = False
+        if self.debit_move_id.id == rec_line_statement.id:
+            rec_line_doc = self.credit_move_id
+        else:
+            rec_line_doc = self.debit_move_id
+        # Tot doc
+        tot_doc_amount = 0
+        # 1. from invoice
+        domain = [('move_id', '=', rec_line_doc.move_id.id)]
+        invoice = self.env['account.invoice'].search(domain, limit=1)
+        if invoice:
+            tot_doc_amount = invoice.amount_untaxed
+        # 2. from account move
+        else:
+            if rec_line_doc.withholding_tax_id:
+                tot_doc_amount = rec_line_doc.credit or rec_line_doc.debit
+
+        # Generate wt moves
+        wt_moves = []
+        for wt_st in wt_statements:
+            """
+            base_competence = \
+                round((wt_st.base / tot_doc_amount) * self.amount,
+                      dp_obj.precision_get(cr, uid, 'Account'))"""
+            tax_data = wt_st.withholding_tax_id.compute_tax(self.amount)
+            # Date maturity
+            p_date_maturity = False
+            payment_lines = wt_st.withholding_tax_id.payment_term.compute(
+                tax_data['tax'],
+                rec_line_statement.date or False)
+            if payment_lines:
+                p_date_maturity = payment_lines[0][0][0]
+            wt_move_vals = {
+                'statement_id': wt_st.id,
+                'date': rec_line_statement.date,
+                'partner_id': rec_line_statement.partner_id.id,
+                'reconcile_partial_id': self.id,
+                'withholding_tax_id': wt_st.withholding_tax_id.id,
+                'account_move_id': rec_line_statement.move_id.id or False,
+                'date_maturity':
+                    p_date_maturity or rec_line_statement.date_maturity,
+                'amount': tax_data['tax']
+            }
+            wt_move_vals = self._prepare_wt_move(wt_move_vals)
+            wt_move = self.env['withholding.tax.move'].create(wt_move_vals)
+            wt_moves.append(wt_move)
+        return wt_moves
+
+
 class AccountMove(models.Model):
     _inherit = "account.move"
 
@@ -16,7 +104,7 @@ class AccountMove(models.Model):
         partner = False
         wt_competence = {}
 
-        # Fist : Partner and WT competence
+        # First : Partner and WT competence
         for line in self.line_id:
             if line.partner_id:
                 partner = line.partner_id
@@ -84,13 +172,15 @@ class AccountMove(models.Model):
                 wt_codes and wt_codes[0]['wt_account_move_line_id'] or False),
             'amount': wt_codes[0]['amount'],
         }
-
         return res
 
 
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
+    withholding_tax_id = fields.Many2one(
+        'withholding.tax', string='Withholding Tax')
+    withholding_tax_base = fields.Float(string='Withholding Tax Base')
     withholding_tax_amount = fields.Float(string='Withholding Tax Amount')
 
 

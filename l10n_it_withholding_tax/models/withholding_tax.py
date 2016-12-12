@@ -203,19 +203,16 @@ class withholding_tax_move(models.Model):
         default='due')
     statement_id = fields.Many2one('withholding.tax.statement', 'Statement')
     date = fields.Date('Date Competence')
-    """
-    wt_voucher_line_id = fields.Many2one('withholding.tax.voucher.line',
-                                         'WT Account Voucher Line',
-                                         ondelete='cascade')
-    """
+    reconcile_partial_id = fields.Many2one(
+        'account.partial.reconcile', 'Reconcile Partial', ondelete='cascade')
     move_line_id = fields.Many2one(
         'account.move.line', 'Account Move line',
-        ondelete='cascade', help="Used from trace WT from other parts(BS)")
+        ondelete='cascade', help="Used from trace WT from other parts")
     withholding_tax_id = fields.Many2one('withholding.tax', 'Withholding Tax')
     amount = fields.Float('Amount')
     partner_id = fields.Many2one('res.partner', 'Partner')
     date_maturity = fields.Date('Date Maturity')
-    account_move_id = fields.Many2one('account.move', 'Account Move',
+    account_move_id = fields.Many2one('account.move', 'Payment Move',
                                       ondelete='cascade')
 
     @api.multi
