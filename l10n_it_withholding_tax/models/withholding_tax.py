@@ -8,7 +8,7 @@ from openerp.exceptions import ValidationError
 from openerp import netsvc
 
 
-class withholding_tax(models.Model):
+class WithholdingTax(models.Model):
     _name = 'withholding.tax'
     _description = 'Withholding Tax'
 
@@ -108,7 +108,7 @@ class withholding_tax(models.Model):
         return base
 
 
-class withholding_tax_rate(models.Model):
+class WithholdingTaxRate(models.Model):
     _name = 'withholding.tax.rate'
     _description = 'Withholding Tax Rates'
 
@@ -147,7 +147,7 @@ class withholding_tax_rate(models.Model):
     tax = fields.Float(string='Tax %')
 
 
-class withholding_tax_statement(models.Model):
+class WithholdingTaxStatement(models.Model):
 
     '''
     The Withholding tax statement are created at the invoice validation
@@ -157,7 +157,8 @@ class withholding_tax_statement(models.Model):
     _description = 'Withholding Tax Statement'
 
     @api.multi
-    @api.depends('move_ids.amount', 'move_ids.state')
+    @api.depends('move_ids.amount', 'move_ids.state',
+                 'move_ids.reconcile_partial_id')
     def _compute_total(self):
         for statement in self:
             tot_wt_amount = 0
@@ -186,8 +187,29 @@ class withholding_tax_statement(models.Model):
     move_ids = fields.One2many('withholding.tax.move',
                                'statement_id', 'Moves')
 
+    def get_wt_competence(self, amount_reconcile):
+        dp_obj = self.env['decimal.precision']
+        amount_wt = 0
+        for st in self:
+            if st.invoice_id:
+                domain = [('invoice_id', '=', st.invoice_id.id),
+                          ('withholding_tax_id', '=', st.withholding_tax_id.id)]
+                wt_inv = self.env['account.invoice.withholding.tax'].search(
+                    domain, limit=1)
+                if wt_inv:
+                    amount_untaxed = amount_reconcile * \
+                        (st.invoice_id.amount_untaxed /
+                         st.invoice_id.amount_total)
+                    base = round(amount_untaxed * wt_inv.base_coeff, 5)
+                    amount_wt = round(base * wt_inv.tax_coeff,
+                                      dp_obj.precision_get('Account'))
+            elif st.move_id:
+                tax_data = st.withholding_tax_id.compute_tax(amount_reconcile)
+                amount_wt = tax_data['tax']
+            return amount_wt
 
-class withholding_tax_move(models.Model):
+
+class WithholdingTaxMove(models.Model):
 
     '''
     The Withholding tax moves are created at the payment of invoice using
@@ -205,6 +227,8 @@ class withholding_tax_move(models.Model):
     date = fields.Date('Date Competence')
     reconcile_partial_id = fields.Many2one(
         'account.partial.reconcile', 'Reconcile Partial', ondelete='cascade')
+    payment_line_id = fields.Many2one(
+        'account.move.line', 'Payment Line', ondelete='cascade')
     move_line_id = fields.Many2one(
         'account.move.line', 'Account Move line',
         ondelete='cascade', help="Used from trace WT from other parts")
@@ -245,15 +269,16 @@ class withholding_tax_move(models.Model):
                 move.write({'state': 'due'})
         return True
 
-    """
     @api.multi
     def unlink(self):
-        # To avoid if move is linked to voucher
+
         for move in self:
-            if move.wt_voucher_line_id \
-                    and move.wt_voucher_line_id.voucher_line_id:
+            if move.statement_id not in statements:
+                statements.append(move.statement_id)
+            # To avoid delete if the wt move are paid
+            if move.state not in ['draft']:
                 raise ValidationError(
-                    _('Warning! You cannot delet move linked to voucher.You \
-                    must before delete the voucher.'))
-        return super(withholding_tax_move, self).unlink()
-        """
+                    _('Warning! Only Withholding Tax moves in Due status \
+                    can be deleted'))
+
+        return super(WithholdingTaxMove, self).unlink()

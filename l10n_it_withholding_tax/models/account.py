@@ -3,8 +3,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from openerp import models, fields, api
+from openerp import models, fields, api, _
 import openerp.addons.decimal_precision as dp
+from openerp.exceptions import ValidationError
+from odoo.tools import float_is_zero
 
 
 class AccountPartialReconcile(models.Model):
@@ -14,8 +16,19 @@ class AccountPartialReconcile(models.Model):
     def create(self, vals):
         dp_obj = self.env['decimal.precision']
         wt_statement_obj = self.env['withholding.tax.statement']
+
+        # Create reconciliation
         reconcile = super(AccountPartialReconcile, self).create(vals)
+        # Wt moves creation
         wt_moves = reconcile.generate_wt_moves()
+
+        # Refund amount in case of withhoding tax
+        wt_amount = 0
+        if wt_moves:
+            for wt_move in wt_moves:
+                wt_amount += wt_move.amount
+        reconcile.amount -= wt_amount
+
         return reconcile
 
     def _prepare_wt_move(self, vals):
@@ -44,37 +57,23 @@ class AccountPartialReconcile(models.Model):
         for rec_line in rec_lines:
             domain = [('move_id', '=', rec_line.move_id.id)]
             wt_statements = wt_statement_obj.search(domain)
-            rec_line_statement = rec_line
-        # Search doc competence(The other line_id credit/debit among statement)
-        rec_line_doc = False
-        if self.debit_move_id.id == rec_line_statement.id:
-            rec_line_doc = self.credit_move_id
-        else:
-            rec_line_doc = self.debit_move_id
-        # Tot doc
-        tot_doc_amount = 0
-        # 1. from invoice
-        domain = [('move_id', '=', rec_line_doc.move_id.id)]
-        invoice = self.env['account.invoice'].search(domain, limit=1)
-        if invoice:
-            tot_doc_amount = invoice.amount_untaxed
-        # 2. from account move
-        else:
-            if rec_line_doc.withholding_tax_id:
-                tot_doc_amount = rec_line_doc.credit or rec_line_doc.debit
+            if wt_statements:
+                rec_line_statement = rec_line
+                break
+        # Search payment move
+        rec_line_payment = False
+        for rec_line in rec_lines:
+            if rec_line.id != rec_line_statement.id:
+                rec_line_payment = rec_line
 
         # Generate wt moves
         wt_moves = []
         for wt_st in wt_statements:
-            """
-            base_competence = \
-                round((wt_st.base / tot_doc_amount) * self.amount,
-                      dp_obj.precision_get(cr, uid, 'Account'))"""
-            tax_data = wt_st.withholding_tax_id.compute_tax(self.amount)
+            amount_wt = wt_st.get_wt_competence(self.amount)
             # Date maturity
             p_date_maturity = False
             payment_lines = wt_st.withholding_tax_id.payment_term.compute(
-                tax_data['tax'],
+                amount_wt,
                 rec_line_statement.date or False)
             if payment_lines:
                 p_date_maturity = payment_lines[0][0][0]
@@ -83,16 +82,42 @@ class AccountPartialReconcile(models.Model):
                 'date': rec_line_statement.date,
                 'partner_id': rec_line_statement.partner_id.id,
                 'reconcile_partial_id': self.id,
+                'payment_line_id': rec_line_payment.id,
                 'withholding_tax_id': wt_st.withholding_tax_id.id,
-                'account_move_id': rec_line_statement.move_id.id or False,
+                'account_move_id': rec_line_payment.move_id.id or False,
                 'date_maturity':
                     p_date_maturity or rec_line_statement.date_maturity,
-                'amount': tax_data['tax']
+                'amount': amount_wt
             }
             wt_move_vals = self._prepare_wt_move(wt_move_vals)
             wt_move = self.env['withholding.tax.move'].create(wt_move_vals)
             wt_moves.append(wt_move)
         return wt_moves
+
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            # To avoid delete if the wt move are paid
+            domain = [('reconcile_partial_id', '=', rec.id),
+                      ('state', '!=', 'due')]
+            wt_moves = self.env['withholding.tax.move'].search(domain)
+            if wt_moves:
+                raise ValidationError(
+                    _('Warning! Only Withholding Tax moves in Due status \
+                    can be deleted'))
+        # Statement to recompute
+        statements = []
+        domain = [('reconcile_partial_id', '=', rec.id)]
+        wt_moves = self.env['withholding.tax.move'].search(domain)
+        for wt_move in wt_moves:
+            if wt_move.statement_id not in statements:
+                statements.append(wt_move.statement_id)
+
+        res = super(AccountPartialReconcile, self).unlink()
+        # Recompute statement values
+        for st in statements:
+            st._compute_total()
+        return res
 
 
 class AccountMove(models.Model):
@@ -194,6 +219,41 @@ class AccountFiscalPosition(models.Model):
 
 class AccountInvoice(models.Model):
     _inherit = "account.invoice"
+
+    @api.one
+    @api.depends(
+        'state', 'currency_id', 'invoice_line_ids.price_subtotal',
+        'move_id.line_ids.amount_residual',
+        'move_id.line_ids.currency_id')
+    def _compute_residual(self):
+        super(AccountInvoice, self)._compute_residual()
+        digits_rounding_precision = self.currency_id.rounding
+        if self.withholding_tax_amount:
+            self.residual -= self.withholding_tax_amount
+        if float_is_zero(self.residual,
+                         precision_rounding=digits_rounding_precision):
+            self.reconciled = True
+        else:
+            self.reconciled = False
+    """
+    @api.one
+    @api.depends('invoice_line_ids.price_subtotal', 'tax_line_ids.amount',
+                 'currency_id', 'company_id', 'date_invoice')
+    def _compute_amount(self):
+        super(AccountInvoice, self)._compute_amount()
+        if self.withholding_tax_amount:
+            self.amount_total -= self.withholding_tax_amount
+            amount_total_company_signed = self.amount_total
+            if self.currency_id and \
+                    self.currency_id != self.company_id.currency_id:
+                currency_id = self.currency_id.with_context(
+                    date=self.date_invoice)
+                amount_total_company_signed = currency_id.compute(
+                    self.amount_total, self.company_id.currency_id)
+            sign = self.type in ['in_refund', 'out_refund'] and -1 or 1
+            self.amount_total_company_signed = amount_total_company_signed * \
+                sign
+            self.amount_total_signed = self.amount_total * sign"""
 
     @api.multi
     @api.depends(
@@ -377,21 +437,14 @@ class AccountInvoiceWithholdingTax(models.Model):
             (1 - (line.discount or 0.0) / 100.0)
         return price_unit
 
-    def _compute_base_amount(self):
-        if self.env.context.get('currency_id'):
-            currency = self.env['res.currency'].browse(
-                self.env.context['currency_id'])
-        else:
-            currency = self.env.user.company_id.currency_id
-        prec = currency.decimal_places
-        for tax in self:
-            base = 0.0
-            for line in tax.invoice_id.invoice_line_ids:
-                if tax.withholding_tax_id in line.invoice_line_tax_wt_ids:
-                    base += line.price_subtotal
-            res = tax.withholding_tax_id.compute_tax(base)
-            tax.base = res['base']
-            tax.tax = res['tax']
+    @api.depends('base', 'tax')
+    def _compute_coeff(self):
+        for inv_wt in self:
+            if inv_wt.invoice_id.amount_untaxed:
+                inv_wt.base_coeff = round(
+                    inv_wt.base / inv_wt.invoice_id.amount_untaxed, 5)
+            if inv_wt.base:
+                inv_wt.tax_coeff = round(inv_wt.tax / inv_wt.base, 5)
 
     invoice_id = fields.Many2one('account.invoice', string='Invoice',
                                  ondelete="cascade")
@@ -399,5 +452,11 @@ class AccountInvoiceWithholdingTax(models.Model):
                                          string='Withholding tax',
                                          ondelete='restrict')
     sequence = fields.Integer('Sequence')
-    base = fields.Float('Base', compute='_compute_base_amount')
+    base = fields.Float('Base')
     tax = fields.Float('Tax')
+    base_coeff = fields.Float(
+        'Base Coeff', compute='_compute_coeff', store=True, help="Coeff used\
+         to compute amount competence in the riconciliation")
+    tax_coeff = fields.Float(
+        'Tax Coeff', compute='_compute_coeff', store=True, help="Coeff used\
+         to compute amount competence in the riconciliation")
