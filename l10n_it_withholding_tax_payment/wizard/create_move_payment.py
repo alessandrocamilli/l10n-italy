@@ -12,7 +12,7 @@ class WizardWtMovePaymentCreate(models.TransientModel):
 
     @api.model
     def default_get(self, fields):
-        res = super(wizard_wt_move_payment_create, self).default_get(fields)
+        res = super(WizardWtMovePaymentCreate, self).default_get(fields)
         active_ids = self._context.get('active_ids', [])
         res = {
             'wt_move_ids': active_ids

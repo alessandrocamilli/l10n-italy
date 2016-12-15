@@ -235,8 +235,8 @@ class WithholdingTaxMove(models.Model):
                     self.wt_account_move_id.name))
         # Move - head
         move_vals = {
-            'ref': _('WT %s - %s - %s') % (
-                self.withholding_tax_id.code, self.partner_id.name,
+            'ref': _('WT %s - %s') % (
+                self.withholding_tax_id.code,
                 self.credit_debit_line_id.move_id.name),
             'journal_id': self.payment_line_id.journal_id.id,
             'date': self.payment_line_id.move_id.date,
@@ -262,8 +262,8 @@ class WithholdingTaxMove(models.Model):
                     ml_vals['debit'] = self.amount
             # Authority tax line
             elif type == 'tax':
-                ml_vals['name'] = '%s - %s - %s' % (
-                    self.withholding_tax_id.code, self.partner_id.name,
+                ml_vals['name'] = '%s - %s' % (
+                    self.withholding_tax_id.code,
                     self.credit_debit_line_id.move_id.name),
                 if self.payment_line_id.credit:
                     ml_vals['debit'] = self.amount
