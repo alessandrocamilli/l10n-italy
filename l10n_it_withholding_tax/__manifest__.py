@@ -17,6 +17,5 @@
         'security/ir.model.access.csv',
         'workflow.xml',
     ],
-    "active": False,
     "installable": True
 }

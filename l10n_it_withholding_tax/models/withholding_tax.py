@@ -65,7 +65,7 @@ class WithholdingTax(models.Model):
         return res
 
     def get_grouping_key(self, invoice_tax_val):
-        """ 
+        """
         Returns a string that will be used to group
         account.invoice.withholding.tax sharing the same properties
         """
@@ -160,8 +160,9 @@ class WithholdingTaxStatement(models.Model):
                                          string='Withholding Tax')
     base = fields.Float('Base')
     tax = fields.Float('Tax')
-    amount = fields.Float(string='WT amount applied', store=True, readonly=True,
-                          compute='_compute_total')
+    amount = fields.Float(
+        string='WT amount applied', store=True, readonly=True,
+        compute='_compute_total')
     amount_paid = fields.Float(string='WT amount paid', store=True,
                                readonly=True, compute='_compute_total')
     move_ids = fields.One2many('withholding.tax.move',
@@ -172,8 +173,9 @@ class WithholdingTaxStatement(models.Model):
         amount_wt = 0
         for st in self:
             if st.invoice_id:
-                domain = [('invoice_id', '=', st.invoice_id.id),
-                          ('withholding_tax_id', '=', st.withholding_tax_id.id)]
+                domain = [
+                    ('invoice_id', '=', st.invoice_id.id),
+                    ('withholding_tax_id', '=', st.withholding_tax_id.id)]
                 wt_inv = self.env['account.invoice.withholding.tax'].search(
                     domain, limit=1)
                 if wt_inv:
@@ -319,21 +321,3 @@ class WithholdingTaxMove(models.Model):
         for move in self:
             if move.state in ['paid']:
                 move.write({'state': 'due'})
-
-    @api.multi
-    def unlink(self):
-
-        for move in self:
-            if move.statement_id not in statements:
-                statements.append(move.statement_id)
-            # To avoid delete if the wt move are paid
-            if move.state not in ['draft']:
-                raise ValidationError(
-                    _('Warning! Only Withholding Tax moves in Due status \
-                    can be deleted'))
-            # Unlink wt account
-            if move.wt_account_move_id:
-                move.wt_account_move_id.button_cancel()
-                # for line in move.wt_account_move_id.line_ids:
-
-        return super(WithholdingTaxMove, self).unlink()

@@ -45,8 +45,6 @@ class WithholdingTaxMovePayment(models.Model):
 
     def create_account_move(self):
         account_move_obj = self.env['account.move']
-        account_move_line_obj = self.env['account.move.line']
-
         for mp in self:
             if not mp.date_payment \
                     or not mp.journal_id\
@@ -102,7 +100,6 @@ class WithholdingTaxMovePayment(models.Model):
             mp.move_id = move.id
 
     def generate_from_moves(self, wt_moves):
-        res_id = False
         sequence_obj = self.env['ir.sequence']
         for wt_move in wt_moves:
             if wt_move.state == 'paid':
@@ -119,7 +116,7 @@ class WithholdingTaxMovePayment(models.Model):
                        wt_move.partner_id.name,
                        wt_move.date,
                        str(wt_move.amount)))
-         # Create Move payment
+        # Create Move payment
         wt_payment = False
         if wt_moves:
             val = {

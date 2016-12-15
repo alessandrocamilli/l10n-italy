@@ -3,10 +3,10 @@
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
 
 
-from openerp import models, fields, api, _
+from openerp import models, fields, api
 
 
-class wizard_wt_move_payment_create(models.TransientModel):
+class WizardWtMovePaymentCreate(models.TransientModel):
     _name = 'wizard.wt.move.payment.create'
     _description = 'WT wizard create move payment'
 
