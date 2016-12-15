@@ -201,7 +201,7 @@ class WithholdingTaxMove(models.Model):
     state = fields.Selection([
         ('due', 'Due'),
         ('paid', 'Paid'),
-    ], 'Status', readonly=True, copy=False, index=True,
+    ], 'Status', readonly=True, copy=False, select=True,
         default='due')
     statement_id = fields.Many2one('withholding.tax.statement', 'Statement')
     date = fields.Date('Date Competence')
@@ -233,7 +233,9 @@ class WithholdingTaxMove(models.Model):
                     self.wt_account_move_id.name))
         # Move - head
         move_vals = {
-            'ref': _('WT %s' % (self.withholding_tax_id.code)),
+            'ref': _('WT %s - %s - %s') % (
+                self.withholding_tax_id.code, self.partner_id.name,
+                self.credit_debit_line_id.move_id.name),
             'journal_id': self.payment_line_id.journal_id.id,
             'date': self.payment_line_id.move_id.date,
         }
@@ -241,7 +243,9 @@ class WithholdingTaxMove(models.Model):
         move_lines = []
         for type in ('partner', 'tax'):
             ml_vals = {
-                'ref': move_vals['ref'],
+                'ref': _('WT %s - %s - %s') % (
+                    self.withholding_tax_id.code, self.partner_id.name,
+                    self.credit_debit_line_id.move_id.name),
                 'name': '%s' % (self.credit_debit_line_id.move_id.name),
                 'date': move_vals['date']
             }
@@ -296,7 +300,6 @@ class WithholdingTaxMove(models.Model):
             wf_service = netsvc.LocalService("workflow")
             wf_service.trg_validate(self.env.uid, self._name, pt.id, 'paid',
                                     self.env.cr)
-        return True
 
     @api.multi
     def action_set_to_draft(self):
@@ -304,21 +307,18 @@ class WithholdingTaxMove(models.Model):
             wf_service = netsvc.LocalService("workflow")
             wf_service.trg_validate(self.env.uid, self._name, pt.id, 'cancel',
                                     self.env.cr)
-        return True
 
     @api.multi
     def move_paid(self):
         for move in self:
             if move.state in ['due']:
                 move.write({'state': 'paid'})
-        return True
 
     @api.multi
     def move_set_due(self):
         for move in self:
             if move.state in ['paid']:
                 move.write({'state': 'due'})
-        return True
 
     @api.multi
     def unlink(self):

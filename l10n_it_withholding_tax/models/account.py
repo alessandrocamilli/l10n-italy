@@ -16,6 +16,24 @@ class AccountPartialReconcile(models.Model):
     def create(self, vals):
         dp_obj = self.env['decimal.precision']
         wt_statement_obj = self.env['withholding.tax.statement']
+        # In case of WT The amount of reconcile mustn't exceed the tot net
+        # amount. The amount residual will be full reconciled with amount net
+        # and amount wt created with payment
+        invoice = False
+        ml_ids = []
+        if vals.get('debit_move_id'):
+            ml_ids.append(vals.get('debit_move_id'))
+        if vals.get('debit_move_id'):
+            ml_ids.append(vals.get('credit_move_id'))
+        for ml in self.env['account.move.line'].browse(ml_ids):
+            domain = [('move_id', '=', ml.move_id.id)]
+            invoice = self.env['account.invoice'].search(domain)
+            if invoice:
+                break
+        # Limit value of reconciliation
+        if invoice and invoice.amount_net_pay:
+            if vals.get('amount') > invoice.amount_net_pay:
+                vals.update({'amount': invoice.amount_net_pay})
 
         # Create reconciliation
         reconcile = super(AccountPartialReconcile, self).create(vals)
@@ -161,9 +179,8 @@ class AccountMove(models.Model):
                     ('account_receivable_id', '=', line.account_id.id)
                 )
                 amount = line.debit
-            wt_ids = self.pool['withholding.tax'].search(self.env.cr,
-                                                         self.env.uid,
-                                                         domain)
+            wt_ids = self.pool['withholding.tax'].search(
+                self.env.cr, self.env.uid, domain)
             if wt_ids:
                 wt_amount += amount
                 if (
@@ -175,8 +192,7 @@ class AccountMove(models.Model):
                     wt_competence[wt_ids[0]]['amount'] = wt_amount
                     wt_competence[wt_ids[0]]['base'] = (
                         self.pool['withholding.tax'].get_base_from_tax(
-                            self.env.cr, self.env.uid,
-                            wt_ids[0], wt_amount)
+                            self.env.cr, self.env.uid, wt_ids[0], wt_amount)
                     )
 
         wt_codes = []
@@ -197,6 +213,26 @@ class AccountMove(models.Model):
             'amount': wt_codes[0]['amount'],
         }
         return res
+
+
+class account_payment(models.Model):
+    _inherit = "account.payment"
+
+    @api.model
+    def default_get(self, fields):
+        """
+        Redifine  amount to pay proportionally to amount total less wt
+        """
+        rec = super(account_payment, self).default_get(fields)
+        invoice_defaults = self.resolve_2many_commands('invoice_ids',
+                                                       rec.get('invoice_ids'))
+        if invoice_defaults and len(invoice_defaults) == 1:
+            invoice = invoice_defaults[0]
+            if 'withholding_tax_amount' in invoice \
+                    and invoice['withholding_tax_amount']:
+                coeff_net = invoice['residual'] / invoice['amount_total']
+                rec['amount'] = invoice['amount_net_pay'] * coeff_net
+        return rec
 
 
 class AccountMoveLine(models.Model):
