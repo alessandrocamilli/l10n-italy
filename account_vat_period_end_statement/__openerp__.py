@@ -26,7 +26,7 @@
 
 {
     "name": "Period End VAT Statement",
-    "version": "8.0.2.0.0",
+    "version": "8.0.3.0.0",
     'category': 'Generic Modules/Accounting',
     'license': 'AGPL-3',
     "depends": [
@@ -43,11 +43,11 @@
         'wizard/remove_period.xml',
         'statement_workflow.xml',
         'security/ir.model.access.csv',
+        'security/security.xml',
         'reports.xml',
         'views/report_vatperiodendstatement.xml',
         'views/config.xml',
         'views/account_view.xml',
     ],
-    'demo': [],
     'installable': True,
 }

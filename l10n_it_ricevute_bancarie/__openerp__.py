@@ -35,7 +35,8 @@
         'account_voucher',
         'l10n_it_fiscalcode',
         'account_due_list',
-        'base_iban'],
+        'base_iban',
+        'l10n_it_abicab'],
     'data': [
         "views/partner_view.xml",
         "views/configuration_view.xml",
@@ -48,9 +49,10 @@
         "views/wizard_riba_file_export.xml",
         "views/account_config_view.xml",
         "riba_workflow.xml",
+        "views/distinta_report.xml",
+        "report.xml",
         "security/ir.model.access.csv",
     ],
-    'images': [],
     'demo': ["demo/riba_demo.xml"],
     'test': [
         'test/riba_invoice.yml',

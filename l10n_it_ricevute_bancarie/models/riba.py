@@ -129,7 +129,7 @@ class RibaList(models.Model):
             for line in list.line_ids:
                 line.confirm()
 
-    @api.one
+    @api.multi
     def riba_new(self):
         self.state = 'draft'
 
@@ -146,12 +146,12 @@ class RibaList(models.Model):
                 riba_list.accreditation_move_id.unlink()
             riba_list.state = 'cancel'
 
-    @api.one
+    @api.multi
     def riba_accepted(self):
         self.state = 'accepted'
         self.date_accepted = fields.Date.context_today(self)
 
-    @api.one
+    @api.multi
     def riba_accredited(self):
         self.state = 'accredited'
         self.date_accreditation = fields.Date.context_today(self)
@@ -159,12 +159,12 @@ class RibaList(models.Model):
             for line in riba_list.line_ids:
                 line.state = 'accredited'
 
-    @api.one
+    @api.multi
     def riba_paid(self):
         self.state = 'paid'
         self.date_paid = fields.Date.context_today(self)
 
-    @api.one
+    @api.multi
     def riba_unsolved(self):
         self.state = 'unsolved'
         self.date_unsolved = fields.Date.context_today(self)
@@ -258,25 +258,26 @@ class RibaListLine(models.Model):
         reconcilied = all(row[0] for row in self._cr.fetchall())
         return reconcilied
 
-    @api.one
+    @api.multi
     def _compute_lines(self):
-        src = []
-        lines = []
-        if self.acceptance_move_id and not self.state == 'unsolved':
-            for m in self.acceptance_move_id.line_id:
-                temp_lines = []
-                if m.reconcile_id and m.credit == 0.0:
-                    temp_lines = map(
-                        lambda x: x.id, m.reconcile_id.line_id)
-                elif m.reconcile_partial_id and m.credit == 0.0:
-                    temp_lines = map(
-                        lambda x: x.id,
-                        m.reconcile_partial_id.line_partial_ids)
-                lines += [x for x in temp_lines if x not in lines]
-                src.append(m.id)
+        for line in self:
+            src = []
+            lines = []
+            if line.acceptance_move_id and not line.state == 'unsolved':
+                for m in line.acceptance_move_id.line_id:
+                    temp_lines = []
+                    if m.reconcile_id and m.credit == 0.0:
+                        temp_lines = map(
+                            lambda x: x.id, m.reconcile_id.line_id)
+                    elif m.reconcile_partial_id and m.credit == 0.0:
+                        temp_lines = map(
+                            lambda x: x.id,
+                            m.reconcile_partial_id.line_partial_ids)
+                    lines += [x for x in temp_lines if x not in lines]
+                    src.append(m.id)
 
-        lines = filter(lambda x: x not in src, lines)
-        self.payment_ids = self.env['account.move.line'].browse(lines)
+            lines = filter(lambda x: x not in src, lines)
+            line.payment_ids = self.env['account.move.line'].browse(lines)
 
     sequence = fields.Integer('Number')
     move_line_ids = fields.One2many(

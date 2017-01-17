@@ -17,8 +17,9 @@ class StockPickingCarriageCondition(models.Model):
     _name = "stock.picking.carriage_condition"
     _description = "Carriage Condition"
 
-    name = fields.Char(string='Carriage Condition', required=True)
-    note = fields.Text(string='Note')
+    name = fields.Char(
+        string='Carriage Condition', required=True, translate=True)
+    note = fields.Text(string='Note', translate=True)
 
 
 class StockPickingGoodsDescription(models.Model):
@@ -26,8 +27,9 @@ class StockPickingGoodsDescription(models.Model):
     _name = 'stock.picking.goods_description'
     _description = "Description of Goods"
 
-    name = fields.Char(string='Description of Goods', required=True)
-    note = fields.Text(string='Note')
+    name = fields.Char(
+        string='Description of Goods', required=True, translate=True)
+    note = fields.Text(string='Note', translate=True)
 
 
 class StockPickingTransportationReason(models.Model):
@@ -35,8 +37,9 @@ class StockPickingTransportationReason(models.Model):
     _name = 'stock.picking.transportation_reason'
     _description = 'Reason for Transportation'
 
-    name = fields.Char(string='Reason For Transportation', required=True)
-    note = fields.Text(string='Note')
+    name = fields.Char(
+        string='Reason For Transportation', required=True, translate=True)
+    note = fields.Text(string='Note', translate=True)
 
 
 class StockPickingTransportationMethod(models.Model):
@@ -44,8 +47,9 @@ class StockPickingTransportationMethod(models.Model):
     _name = 'stock.picking.transportation_method'
     _description = 'Method of Transportation'
 
-    name = fields.Char(string='Method of Transportation', required=True)
-    note = fields.Text(string='Note')
+    name = fields.Char(
+        string='Method of Transportation', required=True, translate=True)
+    note = fields.Text(string='Note', translate=True)
 
 
 class StockDdtType(models.Model):
@@ -57,6 +61,9 @@ class StockDdtType(models.Model):
     name = fields.Char(required=True)
     sequence_id = fields.Many2one('ir.sequence', required=True)
     note = fields.Text(string='Note')
+    company_id = fields.Many2one(
+        'res.company', string='Company',
+        default=lambda self: self.env.user.company_id, )
 
 
 class StockPickingPackagePreparation(models.Model):
@@ -112,6 +119,10 @@ class StockPickingPackagePreparation(models.Model):
     @api.multi
     def action_put_in_pack(self):
         for package in self:
+            # ----- Check if package has details
+            if not package.line_ids:
+                raise exceptions.Warning(
+                    _("Impossible to put in pack a package without details"))
             # ----- Assign ddt number if ddt type is set
             if package.ddt_type_id and not package.ddt_number:
                 package.ddt_number = package.ddt_type_id.sequence_id.get(
@@ -146,6 +157,31 @@ class StockPickingPackagePreparation(models.Model):
             name = u'{partner} of {date}'.format(partner=self.partner_id.name,
                                                  date=self.date)
         self.display_name = name
+
+    @api.multi
+    def create_invoice(self):
+        # ----- Check if sale order related to ddt are invoiced. Show them.
+        invoiced_sale = [
+            picking.sale_id.id
+            for picking in self.picking_ids
+            if picking.sale_id and picking.sale_id.invoice_ids]
+        if invoiced_sale:
+            return {
+                'type': 'ir.actions.act_window',
+                'view_type': 'form',
+                'view_mode': 'tree,form',
+                'res_model': 'sale.order',
+                'target': 'current',
+                'domain': '[("id", "in", {ids})]'.format(ids=invoiced_sale),
+                }
+        # ----- Open wizard to create invoices
+        return {
+            'type': 'ir.actions.act_window',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'ddt.create.invoice',
+            'target': 'new',
+            }
 
 
 class StockPickingPackagePreparationLine(models.Model):
