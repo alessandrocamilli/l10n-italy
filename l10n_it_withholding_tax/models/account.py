@@ -34,9 +34,15 @@ class AccountPartialReconcile(models.Model):
 
         # Create reconciliation
         reconcile = super(AccountPartialReconcile, self).create(vals)
+        # Avoid re-generate wt moves if the move line is an wt move.
+        # It's possible if the user unreconciles a wt move under invoice
+        domain = [('credit_debit_line_id', 'in',
+                   (vals.get('debit_move_id'), vals.get('credit_move_id')))]
+        wt_existing_moves = self.env['withholding.tax.move'].search(domain)
         # Wt moves creation
-        if invoice.withholding_tax_line_ids and \
-                not self._context.get('no_generate_wt_move'):
+        if invoice.withholding_tax_line_ids \
+                and not self._context.get('no_generate_wt_move')\
+                and not wt_existing_moves:
             reconcile.generate_wt_moves()
 
         return reconcile
