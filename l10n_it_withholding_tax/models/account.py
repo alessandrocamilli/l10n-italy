@@ -35,7 +35,8 @@ class AccountPartialReconcile(models.Model):
         # Create reconciliation
         reconcile = super(AccountPartialReconcile, self).create(vals)
         # Wt moves creation
-        if not self._context.get('no_generate_wt_move'):
+        if invoice.withholding_tax_line_ids and \
+                not self._context.get('no_generate_wt_move'):
             reconcile.generate_wt_moves()
 
         return reconcile
