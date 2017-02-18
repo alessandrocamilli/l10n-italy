@@ -205,6 +205,13 @@ class withholding_tax_move(models.Model):
     date_maturity = fields.Date('Date Maturity')
     account_move_id = fields.Many2one('account.move', 'Account Move',
                                       ondelete='cascade')
+    partner_vat = fields.Char('Vat', compute="_partner_data", store=True)
+
+    @api.multi
+    @api.depends('partner_id.vat')
+    def _partner_data(self):
+        for wt in self:
+            wt.partner_vat = wt.partner_id.vat
 
     @api.multi
     def action_paid(self):
