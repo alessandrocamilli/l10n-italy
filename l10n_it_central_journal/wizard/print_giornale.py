@@ -20,6 +20,7 @@ import time
 
 
 class wizard_giornale(models.TransientModel):
+
     def _get_fiscalyear(self, cr, uid, context=None):
         ctx = dict(self._context or {})
         now = time.strftime('%Y-%m-%d')
@@ -43,7 +44,7 @@ class wizard_giornale(models.TransientModel):
         journal_obj = self.env['account.journal']
         journal_ids = journal_obj.search([
             ('central_journal_exclude', '=', False)
-            ])
+        ])
         return journal_ids
 
     _name = "wizard.giornale"
@@ -72,8 +73,8 @@ class wizard_giornale(models.TransientModel):
         string='Journals',
         required=True)
     target_move = fields.Selection([('all', 'All'),
-                                   ('posted', 'Posted'),
-                                   ('draft', 'Draft')],
+                                    ('posted', 'Posted'),
+                                    ('draft', 'Draft')],
                                    'Target Move', default='all')
     fiscal_page_base = fields.Integer('Last printed page', required=True)
     start_row = fields.Integer('Start row', required=True)
@@ -96,7 +97,7 @@ class wizard_giornale(models.TransientModel):
             self.date_move_line_from = date_start
             self.date_move_line_from_view = date_start
             self.date_move_line_to = date_stop
-            self.start_row = self.fiscalyear.progressive_line_number+1
+            self.start_row = self.fiscalyear.progressive_line_number + 1
             self.progressive_debit2 = self.fiscalyear.progressive_debit
             self.progressive_credit = self.fiscalyear.progressive_credit
 
@@ -113,7 +114,7 @@ class wizard_giornale(models.TransientModel):
             ('date', '>=', wizard.date_move_line_from),
             ('date', '<=', wizard.date_move_line_to),
             ('move_id.state', 'in', target_type)
-            ], order='date, move_id asc')
+        ], order='date, move_id asc')
         if not move_line_ids:
             raise UserError(_('No documents found in the current selection'))
         datas = {}
@@ -151,7 +152,7 @@ class wizard_giornale(models.TransientModel):
                 ('date', '>=', wizard.date_move_line_from),
                 ('date', '<=', wizard.date_move_line_to),
                 ('move_id.state', 'in', target_type)
-                ], order='date, move_id asc')
+            ], order='date, move_id asc')
             if not move_line_ids:
                 raise UserError(
                     _('No documents found in the current selection'))
