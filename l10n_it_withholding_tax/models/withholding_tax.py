@@ -206,12 +206,26 @@ class withholding_tax_move(models.Model):
     account_move_id = fields.Many2one('account.move', 'Account Move',
                                       ondelete='cascade')
     partner_vat = fields.Char('Vat', compute="_partner_data", store=True)
+    partner_address = fields.Char('Address', compute="_partner_address",
+                                  store=True)
 
     @api.multi
     @api.depends('partner_id.vat')
     def _partner_data(self):
         for wt in self:
             wt.partner_vat = wt.partner_id.vat
+
+    @api.multi
+    @api.depends('partner_id.street', 'partner_id.street2', 'partner_id.zip',
+                 'partner_id.city', 'partner_id.state_id.code',
+                 'partner_id.country_id.name')
+    def _partner_address(self):
+        for wt in self:
+            address = '{} {} - {} {} {} {}'.format(
+                wt.partner_id.street, wt.partner_id.street2,
+                wt.partner_id.zip, wt.partner_id.city,
+                wt.partner_id.state_id.code, wt.partner_id.country_id.name)
+            wt.partner_address = address
 
     @api.multi
     def action_paid(self):

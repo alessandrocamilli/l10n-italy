@@ -167,6 +167,7 @@
             <field name="arch" type="xml">
 	            <tree string="Withholding Tax Move" version="7.0">
 	            	<field name="partner_id"/>
+	            	<field name="partner_address"/>
 	            	<field name="partner_vat"/>
 	            	<field name="date"/>
        				<field name="withholding_tax_id"/>
@@ -194,6 +195,10 @@
 			            		<field name="partner_id"/>
 			            		<field name="date"/>
 			            	</group>
+			            	<group>
+                                <field name="partner_vat"/>
+                                <field name="partner_address"/>
+                            </group>
 		            	</group>
 		            	<newline/>
 		            	<group>

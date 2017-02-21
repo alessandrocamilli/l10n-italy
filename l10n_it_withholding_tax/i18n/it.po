@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-18 18:10+0000\n"
-"PO-Revision-Date: 2017-02-18 18:10+0000\n"
+"POT-Creation-Date: 2017-02-21 16:52+0000\n"
+"PO-Revision-Date: 2017-02-21 16:52+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -61,6 +61,11 @@ msgstr "Voucher contabile"
 #. module: l10n_it_withholding_tax
 msgid "Active"
 msgstr "Attivo"
+
+#: field:withholding.tax.move,partner_address:0
+#. module: l10n_it_withholding_tax
+msgid "Address"
+msgstr "Indirizzo"
 
 #: field:withholding.tax.move,amount:0
 #: field:withholding.tax.voucher.line,amount:0
@@ -478,7 +483,7 @@ msgstr "Ritenuta"
 msgid "Warning!"
 msgstr "Warning!"
 
-#: code:addons/l10n_it_withholding_tax/models/withholding_tax.py:255
+#: code:addons/l10n_it_withholding_tax/models/withholding_tax.py:269
 #. module: l10n_it_withholding_tax
 #, python-format
 msgid "Warning! You cannot delet move linked to voucher.You                     must before delete the voucher."
