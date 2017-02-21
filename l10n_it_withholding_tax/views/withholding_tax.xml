@@ -172,6 +172,7 @@
 	            	<field name="date"/>
        				<field name="withholding_tax_id"/>
        				<field name="date_maturity"/>
+       				<field name="base" sum="Tot"/>
        				<field name="amount" sum="Tot"/>
        				<field name="account_move_id"/>
        				<field name="state"/>

@@ -201,6 +201,7 @@ class withholding_tax_move(models.Model):
         ondelete='cascade', help="Used from trace WT from other parts(BS)")
     withholding_tax_id = fields.Many2one('withholding.tax', 'Withholding Tax')
     amount = fields.Float('Amount')
+    base = fields.Float('Base', compute="_compute_base", store=True)
     partner_id = fields.Many2one('res.partner', 'Partner')
     date_maturity = fields.Date('Date Maturity')
     account_move_id = fields.Many2one('account.move', 'Account Move',
@@ -208,6 +209,17 @@ class withholding_tax_move(models.Model):
     partner_vat = fields.Char('Vat', compute="_partner_data", store=True)
     partner_address = fields.Char('Address', compute="_partner_address",
                                   store=True)
+
+    @api.multi
+    @api.depends('amount', 'withholding_tax_id')
+    def _compute_base(self):
+        dp_obj = self.env['decimal.precision']
+        for wt in self:
+            if wt.statement_id:
+                if wt.statement_id.amount:
+                    coeff = round(wt.amount / wt.statement_id.amount, 5)
+                    wt.base = round(wt.statement_id.base * coeff,
+                                    dp_obj.precision_get('Account'))
 
     @api.multi
     @api.depends('partner_id.vat')
