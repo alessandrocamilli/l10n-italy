@@ -222,9 +222,10 @@ class withholding_tax_move(models.Model):
     def _partner_address(self):
         for wt in self:
             address = '{} {} - {} {} {} {}'.format(
-                wt.partner_id.street, wt.partner_id.street2,
-                wt.partner_id.zip, wt.partner_id.city,
-                wt.partner_id.state_id.code, wt.partner_id.country_id.name)
+                wt.partner_id.street, wt.partner_id.street2 or '',
+                wt.partner_id.zip or '', wt.partner_id.city or '',
+                wt.partner_id.state_id.code or '',
+                wt.partner_id.country_id.name or '')
             wt.partner_address = address
 
     @api.multi
