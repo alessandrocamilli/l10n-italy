@@ -116,9 +116,9 @@ class account_voucher(orm.Model):
             for l in line_cr_ids_ctrl:
                 if isinstance(l, dict):
                     line_cr_ids.append(l)
-
-            _compute_wt_values(line_dr_ids)
-            _compute_wt_values(line_cr_ids)
+            if not context.get('no_compute_wt'):
+                _compute_wt_values(line_dr_ids)
+                _compute_wt_values(line_cr_ids)
 
         return res
 
