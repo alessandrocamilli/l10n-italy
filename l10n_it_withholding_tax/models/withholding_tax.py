@@ -33,6 +33,8 @@ class withholding_tax(models.Model):
     active = fields.Boolean('Active', default=True)
     name = fields.Char('Name', size=256, required=True)
     certification = fields.Boolean('Certification')
+    income_type_id = fields.Many2one(
+        'withholding.tax.income.type', 'Income Type')
     comment = fields.Text('Text')
     account_receivable_id = fields.Many2one(
         'account.account',
@@ -200,6 +202,11 @@ class withholding_tax_move(models.Model):
         'account.move.line', 'Account Move line',
         ondelete='cascade', help="Used from trace WT from other parts(BS)")
     withholding_tax_id = fields.Many2one('withholding.tax', 'Withholding Tax')
+    income_type_id = fields.Many2one(
+        'withholding.tax.income.type', 'Income Type',
+        compute="_compute_income_type", store=True)
+    income_type_code = fields.Char('Income Type Code',
+                                   compute="_compute_income_type", store=True)
     amount = fields.Float('Amount')
     base = fields.Float('Base', compute="_compute_base", store=True)
     partner_id = fields.Many2one('res.partner', 'Partner')
@@ -209,6 +216,18 @@ class withholding_tax_move(models.Model):
     partner_vat = fields.Char('Vat', compute="_partner_data", store=True)
     partner_address = fields.Char('Address', compute="_partner_address",
                                   store=True)
+
+    @api.multi
+    @api.depends('withholding_tax_id')
+    def _compute_income_type(self):
+        for wt in self:
+            if wt.withholding_tax_id.income_type_id:
+                self.income_type_id = wt.withholding_tax_id.income_type_id.id
+                self.income_type_code =\
+                    wt.withholding_tax_id.income_type_id.code
+            else:
+                self.income_type_id = False
+                self.income_type_code = False
 
     @api.multi
     @api.depends('amount', 'withholding_tax_id')
@@ -282,3 +301,11 @@ class withholding_tax_move(models.Model):
                     _('Warning! You cannot delet move linked to voucher.You \
                     must before delete the voucher.'))
         return super(withholding_tax_move, self).unlink()
+
+
+class WithholdingTaxIncomeType(models.Model):
+    _name = 'withholding.tax.income.type'
+    _description = 'Withholding Tax Income Type'
+
+    code = fields.Char('Code')
+    name = fields.Char('Name')

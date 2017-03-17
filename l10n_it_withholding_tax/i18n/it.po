@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-21 16:52+0000\n"
-"PO-Revision-Date: 2017-02-21 16:52+0000\n"
+"POT-Creation-Date: 2017-03-17 18:59+0000\n"
+"PO-Revision-Date: 2017-03-17 18:59+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -80,6 +80,7 @@ msgstr "Amount Net Pay"
 
 #: field:account.invoice.withholding.tax,base:0
 #: field:withholding.tax,base:0
+#: field:withholding.tax.move,base:0
 #: field:withholding.tax.statement,base:0
 #: field:withholding.tax.wizard.create.statement,base:0
 #. module: l10n_it_withholding_tax
@@ -102,6 +103,11 @@ msgstr "Annulla"
 msgid "Certification"
 msgstr "Da Certificare"
 
+#: field:withholding.tax.income.type,code:0
+#. module: l10n_it_withholding_tax
+msgid "Code"
+msgstr "Code"
+
 #: view:withholding.tax.wizard.create.document:l10n_it_withholding_tax.wt_wizard_create_document
 #: view:withholding.tax.wizard.create.statement:l10n_it_withholding_tax.wt_wizard_create_statement
 #. module: l10n_it_withholding_tax
@@ -122,6 +128,7 @@ msgstr "Crea Movimento di Ritenuta"
 
 #: field:account.invoice.withholding.tax,create_uid:0
 #: field:withholding.tax,create_uid:0
+#: field:withholding.tax.income.type,create_uid:0
 #: field:withholding.tax.move,create_uid:0
 #: field:withholding.tax.rate,create_uid:0
 #: field:withholding.tax.statement,create_uid:0
@@ -135,6 +142,7 @@ msgstr "Created by"
 
 #: field:account.invoice.withholding.tax,create_date:0
 #: field:withholding.tax,create_date:0
+#: field:withholding.tax.income.type,create_date:0
 #: field:withholding.tax.move,create_date:0
 #: field:withholding.tax.rate,create_date:0
 #: field:withholding.tax.statement,create_date:0
@@ -188,6 +196,7 @@ msgstr "Debit"
 
 #: field:account.invoice.withholding.tax,display_name:0
 #: field:withholding.tax,display_name:0
+#: field:withholding.tax.income.type,display_name:0
 #: field:withholding.tax.move,display_name:0
 #: field:withholding.tax.rate,display_name:0
 #: field:withholding.tax.statement,display_name:0
@@ -216,7 +225,7 @@ msgstr "Da pagare"
 msgid "Error! Wt statement already exists for this move"
 msgstr "Errore! Movimento di ritenuta già esistente per questa registrazione"
 
-#: code:addons/l10n_it_withholding_tax/models/withholding_tax.py:110
+#: code:addons/l10n_it_withholding_tax/models/withholding_tax.py:112
 #. module: l10n_it_withholding_tax
 #, python-format
 msgid "Error! You cannot have 2 pricelist versions that                     overlap!"
@@ -235,6 +244,7 @@ msgstr "Group By..."
 
 #: field:account.invoice.withholding.tax,id:0
 #: field:withholding.tax,id:0
+#: field:withholding.tax.income.type,id:0
 #: field:withholding.tax.move,id:0
 #: field:withholding.tax.rate,id:0
 #: field:withholding.tax.statement,id:0
@@ -245,6 +255,19 @@ msgstr "Group By..."
 #. module: l10n_it_withholding_tax
 msgid "ID"
 msgstr "ID"
+
+#: field:withholding.tax,income_type_id:0
+#: view:withholding.tax.income.type:l10n_it_withholding_tax.view_withholding_tax_income_type_form
+#: view:withholding.tax.income.type:l10n_it_withholding_tax.view_withholding_tax_income_type_tree
+#: field:withholding.tax.move,income_type_id:0
+#. module: l10n_it_withholding_tax
+msgid "Income Type"
+msgstr "Tipologia di reddito"
+
+#: field:withholding.tax.move,income_type_code:0
+#. module: l10n_it_withholding_tax
+msgid "Income Type Code"
+msgstr "Codice Tipo Reddito"
 
 #: field:account.invoice.withholding.tax,invoice_id:0
 #: model:ir.model,name:l10n_it_withholding_tax.model_account_invoice
@@ -265,6 +288,7 @@ msgstr "Voci sezionale"
 
 #: field:account.invoice.withholding.tax,__last_update:0
 #: field:withholding.tax,__last_update:0
+#: field:withholding.tax.income.type,__last_update:0
 #: field:withholding.tax.move,__last_update:0
 #: field:withholding.tax.rate,__last_update:0
 #: field:withholding.tax.statement,__last_update:0
@@ -278,6 +302,7 @@ msgstr "Ultima modifica il"
 
 #: field:account.invoice.withholding.tax,write_uid:0
 #: field:withholding.tax,write_uid:0
+#: field:withholding.tax.income.type,write_uid:0
 #: field:withholding.tax.move,write_uid:0
 #: field:withholding.tax.rate,write_uid:0
 #: field:withholding.tax.statement,write_uid:0
@@ -291,6 +316,7 @@ msgstr "Last Updated by"
 
 #: field:account.invoice.withholding.tax,write_date:0
 #: field:withholding.tax,write_date:0
+#: field:withholding.tax.income.type,write_date:0
 #: field:withholding.tax.move,write_date:0
 #: field:withholding.tax.rate,write_date:0
 #: field:withholding.tax.statement,write_date:0
@@ -313,6 +339,7 @@ msgid "Moves"
 msgstr "Movimenti"
 
 #: field:withholding.tax,name:0
+#: field:withholding.tax.income.type,name:0
 #. module: l10n_it_withholding_tax
 msgid "Name"
 msgstr "Nome"
@@ -483,7 +510,7 @@ msgstr "Ritenuta"
 msgid "Warning!"
 msgstr "Warning!"
 
-#: code:addons/l10n_it_withholding_tax/models/withholding_tax.py:269
+#: code:addons/l10n_it_withholding_tax/models/withholding_tax.py:301
 #. module: l10n_it_withholding_tax
 #, python-format
 msgid "Warning! You cannot delet move linked to voucher.You                     must before delete the voucher."
@@ -520,6 +547,11 @@ msgstr "Ritenuta D'Acconto Allocazione"
 #. module: l10n_it_withholding_tax
 msgid "Withholding Tax Amount Residual"
 msgstr "Ritenuta Residuo"
+
+#: model:ir.model,name:l10n_it_withholding_tax.model_withholding_tax_income_type
+#. module: l10n_it_withholding_tax
+msgid "Withholding Tax Income Type"
+msgstr "Withholding Tax Income Type"
 
 #: field:account.voucher.line,withholding_tax_line_ids:0
 #. module: l10n_it_withholding_tax
@@ -575,6 +607,12 @@ msgstr "Ritenuta"
 #. module: l10n_it_withholding_tax
 msgid "Withhoulding Tax"
 msgstr "Ritenuta"
+
+#: model:ir.actions.act_window,name:l10n_it_withholding_tax.action_withholding_tax_income_type
+#: model:ir.ui.menu,name:l10n_it_withholding_tax.menu_withholding_tax_income_type
+#. module: l10n_it_withholding_tax
+msgid "Withhoulding Tax Income Type"
+msgstr "Withhoulding Tax Income Type"
 
 #: model:ir.actions.act_window,name:l10n_it_withholding_tax.action_withholding_tax_move
 #. module: l10n_it_withholding_tax
