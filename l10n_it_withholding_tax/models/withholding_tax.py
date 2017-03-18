@@ -218,16 +218,16 @@ class withholding_tax_move(models.Model):
                                   store=True)
 
     @api.multi
-    @api.depends('withholding_tax_id')
+    @api.depends('withholding_tax_id', 'withholding_tax_id.income_type_id')
     def _compute_income_type(self):
         for wt in self:
             if wt.withholding_tax_id.income_type_id:
-                self.income_type_id = wt.withholding_tax_id.income_type_id.id
-                self.income_type_code =\
+                wt.income_type_id = wt.withholding_tax_id.income_type_id.id
+                wt.income_type_code =\
                     wt.withholding_tax_id.income_type_id.code
             else:
-                self.income_type_id = False
-                self.income_type_code = False
+                wt.income_type_id = False
+                wt.income_type_code = False
 
     @api.multi
     @api.depends('amount', 'withholding_tax_id')
