@@ -15,6 +15,7 @@
         'views/account.xml',
         'views/voucher.xml',
         'views/withholding_tax.xml',
+        'views/partner.xml',
         'views/report_invoice.xml',
         'wizard/create_wt_statement_view.xml',
         'wizard/create_wt_document_view.xml',

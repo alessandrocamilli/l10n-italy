@@ -31,7 +31,6 @@
 		            	<group>
 		            	    <field name="name"/>
 			            	<field name="certification"/>
-			            	<field name="income_type_id"/>
 			            	<field name="account_receivable_id"/>
 			            	<field name="account_payable_id"/>
 			            	<field name="payment_term"/>
@@ -207,6 +206,7 @@
 		            	<group>
 			            	<group>
 			            		<field name="withholding_tax_id"/>
+			            		<field name="income_type_id"/>
 			            		<field name="income_type_code"/>
 	       						<field name="amount"/>
 			            	</group>

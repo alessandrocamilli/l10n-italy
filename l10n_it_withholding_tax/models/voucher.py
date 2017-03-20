@@ -562,6 +562,11 @@ class withholding_tax_voucher_line(orm.Model):
                 'date': wt_v_line.voucher_line_id.voucher_id.date,
                 'partner_id':
                     wt_v_line.voucher_line_id.voucher_id.partner_id.id,
+                'income_type_id':
+                    wt_v_line.voucher_line_id.voucher_id.partner_id.income_type_id
+                    and
+                    wt_v_line.voucher_line_id.voucher_id.partner_id.income_type_id.id
+                    or False,
                 'wt_voucher_line_id': wt_v_line.id,
                 'withholding_tax_id': wt_v_line.withholding_tax_id.id,
                 'account_move_id':

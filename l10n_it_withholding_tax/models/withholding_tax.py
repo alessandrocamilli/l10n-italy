@@ -33,8 +33,6 @@ class withholding_tax(models.Model):
     active = fields.Boolean('Active', default=True)
     name = fields.Char('Name', size=256, required=True)
     certification = fields.Boolean('Certification')
-    income_type_id = fields.Many2one(
-        'withholding.tax.income.type', 'Income Type')
     comment = fields.Text('Text')
     account_receivable_id = fields.Many2one(
         'account.account',
@@ -203,8 +201,7 @@ class withholding_tax_move(models.Model):
         ondelete='cascade', help="Used from trace WT from other parts(BS)")
     withholding_tax_id = fields.Many2one('withholding.tax', 'Withholding Tax')
     income_type_id = fields.Many2one(
-        'withholding.tax.income.type', 'Income Type',
-        compute="_compute_income_type", store=True)
+        'withholding.tax.income.type', 'Income Type')
     income_type_code = fields.Char('Income Type Code',
                                    compute="_compute_income_type", store=True)
     amount = fields.Float('Amount')
@@ -218,15 +215,13 @@ class withholding_tax_move(models.Model):
                                   store=True)
 
     @api.multi
-    @api.depends('withholding_tax_id', 'withholding_tax_id.income_type_id')
+    @api.depends('income_type_id')
     def _compute_income_type(self):
         for wt in self:
-            if wt.withholding_tax_id.income_type_id:
-                wt.income_type_id = wt.withholding_tax_id.income_type_id.id
+            if wt.income_type_id:
                 wt.income_type_code =\
-                    wt.withholding_tax_id.income_type_id.code
+                    wt.income_type_id.code
             else:
-                wt.income_type_id = False
                 wt.income_type_code = False
 
     @api.multi
