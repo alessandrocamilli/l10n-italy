@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-18 09:12+0000\n"
-"PO-Revision-Date: 2017-03-18 09:12+0000\n"
+"POT-Creation-Date: 2017-03-20 13:38+0000\n"
+"PO-Revision-Date: 2017-03-20 13:38+0000\n"
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -225,7 +225,7 @@ msgstr "Da pagare"
 msgid "Error! Wt statement already exists for this move"
 msgstr "Errore! Movimento di ritenuta già esistente per questa registrazione"
 
-#: code:addons/l10n_it_withholding_tax/models/withholding_tax.py:112
+#: code:addons/l10n_it_withholding_tax/models/withholding_tax.py:110
 #. module: l10n_it_withholding_tax
 #, python-format
 msgid "Error! You cannot have 2 pricelist versions that                     overlap!"
@@ -256,7 +256,6 @@ msgstr "Group By..."
 msgid "ID"
 msgstr "ID"
 
-#: field:withholding.tax,income_type_id:0
 #: view:withholding.tax.income.type:l10n_it_withholding_tax.view_withholding_tax_income_type_form
 #: view:withholding.tax.income.type:l10n_it_withholding_tax.view_withholding_tax_income_type_tree
 #: field:withholding.tax.move,income_type_id:0
@@ -268,6 +267,11 @@ msgstr "Tipologia di reddito"
 #. module: l10n_it_withholding_tax
 msgid "Income Type Code"
 msgstr "Codice Tipo Reddito"
+
+#: field:res.partner,income_type_id:0
+#. module: l10n_it_withholding_tax
+msgid "Income Type Partner"
+msgstr "Tipologia di Reddito"
 
 #: field:account.invoice.withholding.tax,invoice_id:0
 #: model:ir.model,name:l10n_it_withholding_tax.model_account_invoice
@@ -356,6 +360,7 @@ msgstr "Netto a Pagare"
 msgid "Paid"
 msgstr "Pagata"
 
+#: model:ir.model,name:l10n_it_withholding_tax.model_res_partner
 #: field:withholding.tax.move,partner_id:0
 #: field:withholding.tax.statement,partner_id:0
 #: field:withholding.tax.wizard.create.document,line_ids:0
@@ -510,7 +515,7 @@ msgstr "Ritenuta"
 msgid "Warning!"
 msgstr "Warning!"
 
-#: code:addons/l10n_it_withholding_tax/models/withholding_tax.py:301
+#: code:addons/l10n_it_withholding_tax/models/withholding_tax.py:296
 #. module: l10n_it_withholding_tax
 #, python-format
 msgid "Warning! You cannot delet move linked to voucher.You                     must before delete the voucher."
@@ -612,7 +617,7 @@ msgstr "Ritenuta"
 #: model:ir.ui.menu,name:l10n_it_withholding_tax.menu_withholding_tax_income_type
 #. module: l10n_it_withholding_tax
 msgid "Withhoulding Tax Income Type"
-msgstr "Tipologia di Reddito"
+msgstr "Withhoulding Tax Income Type"
 
 #: model:ir.actions.act_window,name:l10n_it_withholding_tax.action_withholding_tax_move
 #. module: l10n_it_withholding_tax

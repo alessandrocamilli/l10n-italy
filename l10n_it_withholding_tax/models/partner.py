@@ -9,4 +9,4 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
 
     income_type_id = fields.Many2one(
-        'withholding.tax.income.type', 'Income Type')
+        'withholding.tax.income.type', string='Income Type Partner')
