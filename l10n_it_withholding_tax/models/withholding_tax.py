@@ -192,7 +192,8 @@ class WithholdingTaxStatement(models.Model):
             return amount_wt
 
     def _compute_display_name(self):
-        self.display_name = self.move_id.name
+        self.display_name = \
+            self.partner_id.name + ' - ' + self.withholding_tax_id.name
 
 
 class WithholdingTaxMove(models.Model):
@@ -302,7 +303,8 @@ class WithholdingTaxMove(models.Model):
                 })
 
     def _compute_display_name(self):
-        self.display_name = self.account_move_id.name
+        self.display_name = \
+            self.partner_id.name + ' - ' + self.withholding_tax_id.name
 
     @api.multi
     def action_paid(self):
