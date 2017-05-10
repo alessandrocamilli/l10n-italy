@@ -167,6 +167,7 @@ class WithholdingTaxStatement(models.Model):
                                readonly=True, compute='_compute_total')
     move_ids = fields.One2many('withholding.tax.move',
                                'statement_id', 'Moves')
+    display_name = fields.Char(compute='_compute_display_name')
 
     def get_wt_competence(self, amount_reconcile):
         dp_obj = self.env['decimal.precision']
@@ -189,6 +190,9 @@ class WithholdingTaxStatement(models.Model):
                 tax_data = st.withholding_tax_id.compute_tax(amount_reconcile)
                 amount_wt = tax_data['tax']
             return amount_wt
+
+    def _compute_display_name(self):
+        self.display_name = self.move_id.name
 
 
 class WithholdingTaxMove(models.Model):
@@ -224,6 +228,7 @@ class WithholdingTaxMove(models.Model):
                                       ondelete='cascade')
     wt_account_move_id = fields.Many2one(
         'account.move', 'WT Move', ondelete='cascade')
+    display_name = fields.Char(compute='_compute_display_name')
 
     def generate_account_move(self):
         """
@@ -295,6 +300,9 @@ class WithholdingTaxMove(models.Model):
                     'credit_move_id': self.credit_debit_line_id.id,
                     'amount': self.amount,
                 })
+
+    def _compute_display_name(self):
+        self.display_name = self.account_move_id.name
 
     @api.multi
     def action_paid(self):
