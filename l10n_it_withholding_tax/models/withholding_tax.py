@@ -208,8 +208,7 @@ class WithholdingTaxMove(models.Model):
     state = fields.Selection([
         ('due', 'Due'),
         ('paid', 'Paid'),
-    ], 'Status', readonly=True, copy=False, select=True,
-        default='due')
+    ], 'Status', readonly=True, copy=False, default='due')
     statement_id = fields.Many2one('withholding.tax.statement', 'Statement')
     date = fields.Date('Date Competence')
     reconcile_partial_id = fields.Many2one(
