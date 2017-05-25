@@ -10,7 +10,7 @@
         ' fiscali italiani',
     'version': '8.0.1.0.0',
     'category': 'Account',
-    'author': "Openforce di Camilli Alessandro"
+    'author': "Openforce di Camilli Alessandro, "
         "Odoo Community Association (OCA)",
     'website': 'http://odoo-italia.net',
     'license': 'LGPL-3',
