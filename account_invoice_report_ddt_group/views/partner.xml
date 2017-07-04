@@ -8,7 +8,7 @@
             <field name="arch" type="xml">
 
                 <!-- Add option in the shipping info -->
-                <xpath expr="//field[@name='transportation_method_id']" position="after">
+                <xpath expr="//field[@name='ddt_show_price'][2]" position="after">
                     <field name="ddt_invoice_print_shipping_address"/>
                 </xpath>
 
