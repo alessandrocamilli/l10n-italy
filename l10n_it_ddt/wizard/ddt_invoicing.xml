@@ -8,8 +8,8 @@
               <form string="DDT Invoicing">
                 <separator string="DDT" />
                     <group>
-	                    <field name="date_from" />
-	                    <field name="date_to" />
+                        <field name="date_from" />
+                        <field name="date_to" />
                     </group>
                     <footer>
                         <button name="create_invoices" string="Create" type="object" class="oe_highlight"/>
