@@ -95,24 +95,45 @@
         FISCAL POSITION
          -->
         <record model="ir.ui.view" id="view_withholding_tax_fiscal_position_form">
-			<field name="name">view.withholding.tax.fiscal.position.form</field>
-			<field name="model">account.fiscal.position</field>
-			<field name="inherit_id" ref="account.view_account_position_form"/>
-			<field name="arch" type="xml">
-			    
-				<xpath expr="//separator[@string='Taxes Mapping']" position="before">
-				    <separator string="Withholding Tax"/>
-			        	<field name="withholding_tax_ids" nolabel="1">
-			        	    <tree editable="bottom">
-			        	        <field name="name"/>
-			        	        <field name="tax"/>
-			        	        <field name="base"/>
-			        	    </tree>
-			        	</field>
-				</xpath>
-				
-			</field>
-		</record>
-	
-	</data>
+            <field name="name">view.withholding.tax.fiscal.position.form</field>
+            <field name="model">account.fiscal.position</field>
+            <field name="inherit_id" ref="account.view_account_position_form"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//separator[@string='Taxes Mapping']" position="before">
+                    <separator string="Withholding Tax"/>
+                        <field name="withholding_tax_ids" nolabel="1">
+                            <tree editable="bottom">
+                                <field name="name"/>
+                                <field name="tax"/>
+                                <field name="base"/>
+                            </tree>
+                        </field>
+                </xpath>
+
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_withholding_tax_exclude_tree">
+            <field name="name">view.withholding.tax.exclude.tree</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='discount']" position="after">
+                    <field name="withholding_tax_exclude"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="view_withholding_tax_exclude_supplier_tree">
+            <field name="name">view.withholding.tax.exclude.supplier.tree</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_supplier_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='discount']" position="after">
+                    <field name="withholding_tax_exclude"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
 </openerp>

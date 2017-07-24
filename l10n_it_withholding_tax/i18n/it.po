@@ -6,8 +6,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 8.0\n"
 "Report-Msgid-Bugs-To: \n"
+<<<<<<< HEAD
 "POT-Creation-Date: 2017-03-20 13:38+0000\n"
 "PO-Revision-Date: 2017-03-20 13:38+0000\n"
+=======
+"POT-Creation-Date: 2017-04-24 09:46+0000\n"
+"PO-Revision-Date: 2017-04-24 09:46+0000\n"
+>>>>>>> 2b2f4f07... [ADD] flag on product to exclude of withholding tax (#323)
 "Last-Translator: <>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -75,12 +80,17 @@ msgstr "Importo"
 
 #: view:website:account.report_invoice_document
 #. module: l10n_it_withholding_tax
+<<<<<<< HEAD
 msgid "Amount Net Pay"
 msgstr "Amount Net Pay"
 
 #: field:account.invoice.withholding.tax,base:0
 #: field:withholding.tax,base:0
 #: field:withholding.tax.move,base:0
+=======
+#: field:account.invoice.withholding.tax,base:0
+#: field:withholding.tax,base:0
+>>>>>>> 2b2f4f07... [ADD] flag on product to exclude of withholding tax (#323)
 #: field:withholding.tax.statement,base:0
 #: field:withholding.tax.wizard.create.statement,base:0
 #. module: l10n_it_withholding_tax
@@ -128,7 +138,10 @@ msgstr "Crea Movimento di Ritenuta"
 
 #: field:account.invoice.withholding.tax,create_uid:0
 #: field:withholding.tax,create_uid:0
+<<<<<<< HEAD
 #: field:withholding.tax.income.type,create_uid:0
+=======
+>>>>>>> 2b2f4f07... [ADD] flag on product to exclude of withholding tax (#323)
 #: field:withholding.tax.move,create_uid:0
 #: field:withholding.tax.rate,create_uid:0
 #: field:withholding.tax.statement,create_uid:0
@@ -222,8 +235,13 @@ msgstr "Da pagare"
 #: code:addons/l10n_it_withholding_tax/wizard/create_wt_document.py:20
 #. module: l10n_it_withholding_tax
 #, python-format
+<<<<<<< HEAD
 msgid "Error! Wt statement already exists for this move"
 msgstr "Errore! Movimento di ritenuta già esistente per questa registrazione"
+=======
+msgid "Error! You cannot have 2 pricelist versions that                     overlap!"
+msgstr "Errore! I periodi si sovrappongono"
+>>>>>>> 2b2f4f07... [ADD] flag on product to exclude of withholding tax (#323)
 
 #: code:addons/l10n_it_withholding_tax/models/withholding_tax.py:110
 #. module: l10n_it_withholding_tax
@@ -242,9 +260,15 @@ msgstr "Posizione fiscale"
 msgid "Group By..."
 msgstr "Group By..."
 
+<<<<<<< HEAD
 #: field:account.invoice.withholding.tax,id:0
 #: field:withholding.tax,id:0
 #: field:withholding.tax.income.type,id:0
+=======
+#. module: l10n_it_withholding_tax
+#: field:account.invoice.withholding.tax,id:0
+#: field:withholding.tax,id:0
+>>>>>>> 2b2f4f07... [ADD] flag on product to exclude of withholding tax (#323)
 #: field:withholding.tax.move,id:0
 #: field:withholding.tax.rate,id:0
 #: field:withholding.tax.statement,id:0
@@ -280,6 +304,15 @@ msgstr "Tipologia di Reddito"
 msgid "Invoice"
 msgstr "Fattura"
 
+<<<<<<< HEAD
+=======
+#. module: l10n_it_withholding_tax
+#: model:ir.model,name:l10n_it_withholding_tax.model_account_invoice_line
+msgid "Invoice Line"
+msgstr "Riga fattura"
+
+#. module: l10n_it_withholding_tax
+>>>>>>> 2b2f4f07... [ADD] flag on product to exclude of withholding tax (#323)
 #: model:ir.model,name:l10n_it_withholding_tax.model_account_invoice_withholding_tax
 #. module: l10n_it_withholding_tax
 msgid "Invoice Withholding Tax Line"
@@ -306,7 +339,10 @@ msgstr "Ultima modifica il"
 
 #: field:account.invoice.withholding.tax,write_uid:0
 #: field:withholding.tax,write_uid:0
+<<<<<<< HEAD
 #: field:withholding.tax.income.type,write_uid:0
+=======
+>>>>>>> 2b2f4f07... [ADD] flag on product to exclude of withholding tax (#323)
 #: field:withholding.tax.move,write_uid:0
 #: field:withholding.tax.rate,write_uid:0
 #: field:withholding.tax.statement,write_uid:0
@@ -320,7 +356,10 @@ msgstr "Last Updated by"
 
 #: field:account.invoice.withholding.tax,write_date:0
 #: field:withholding.tax,write_date:0
+<<<<<<< HEAD
 #: field:withholding.tax.income.type,write_date:0
+=======
+>>>>>>> 2b2f4f07... [ADD] flag on product to exclude of withholding tax (#323)
 #: field:withholding.tax.move,write_date:0
 #: field:withholding.tax.rate,write_date:0
 #: field:withholding.tax.statement,write_date:0
@@ -345,6 +384,12 @@ msgstr "Movimenti"
 #: field:withholding.tax,name:0
 #: field:withholding.tax.income.type,name:0
 #. module: l10n_it_withholding_tax
+<<<<<<< HEAD
+=======
+#: field:withholding.tax,name:0
+#: field:withholding.tax.move,display_name:0
+#: field:withholding.tax.statement,display_name:0
+>>>>>>> 2b2f4f07... [ADD] flag on product to exclude of withholding tax (#323)
 msgid "Name"
 msgstr "Nome"
 
@@ -412,12 +457,22 @@ msgstr "Importo"
 #: field:withholding.tax,tax:0
 #: field:withholding.tax.rate,tax:0
 #. module: l10n_it_withholding_tax
+<<<<<<< HEAD
+=======
+#: field:withholding.tax,tax:0
+#: field:withholding.tax.rate,tax:0
+>>>>>>> 2b2f4f07... [ADD] flag on product to exclude of withholding tax (#323)
 msgid "Tax %"
 msgstr "Tax %"
 
 #: field:withholding.tax,comment:0
 #: field:withholding.tax.rate,comment:0
 #. module: l10n_it_withholding_tax
+<<<<<<< HEAD
+=======
+#: field:withholding.tax,comment:0
+#: field:withholding.tax.rate,comment:0
+>>>>>>> 2b2f4f07... [ADD] flag on product to exclude of withholding tax (#323)
 msgid "Text"
 msgstr "Text"
 
@@ -608,6 +663,17 @@ msgstr "Situazione Ritenuta"
 msgid "Withholding tax"
 msgstr "Ritenuta"
 
+#. module: l10n_it_withholding_tax
+#: field:account.invoice.line,withholding_tax_exclude:0
+msgid "Withholding tax exclude"
+msgstr "No Rit"
+
+#. module: l10n_it_withholding_tax
+#: field:product.template,withholding_tax_exclude:0
+msgid "Withholding tax exclude"
+msgstr "No Rit"
+
+#. module: l10n_it_withholding_tax
 #: model:ir.actions.act_window,name:l10n_it_withholding_tax.action_withholding_tax
 #. module: l10n_it_withholding_tax
 msgid "Withhoulding Tax"
@@ -643,14 +709,12 @@ msgstr "You can choose Only ONE move."
 #: view:account.voucher:l10n_it_withholding_tax.view_withholding_voucher_payment_receipt_form
 #: view:account.voucher:l10n_it_withholding_tax.view_withholding_voucher_payment_supplier_form
 #: view:account.voucher:l10n_it_withholding_tax.view_withholding_voucher_vendor_receipt_form
-#. module: l10n_it_withholding_tax
 msgid "onchange_amount(amount, amount_unreconciled, amount_residual_withholding_tax, context)"
 msgstr "onchange_amount(amount, amount_unreconciled, amount_residual_withholding_tax, context)"
 
 #: view:account.voucher:l10n_it_withholding_tax.view_withholding_voucher_payment_receipt_form
 #: view:account.voucher:l10n_it_withholding_tax.view_withholding_voucher_payment_supplier_form
 #: view:account.voucher:l10n_it_withholding_tax.view_withholding_voucher_vendor_receipt_form
-#. module: l10n_it_withholding_tax
 msgid "onchange_reconcile(reconcile, amount, amount_unreconciled, amount_residual_withholding_tax, context)"
 msgstr "onchange_reconcile(reconcile, amount, amount_unreconciled, amount_residual_withholding_tax, context)"
 
