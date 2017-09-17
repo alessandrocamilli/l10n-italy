@@ -5,7 +5,7 @@
         <record id="view_tax_code_esigibilita_form" model="ir.ui.view">
             <field name="name">account.tax.code.esigibilita.form</field>
             <field name="model">account.tax.code</field>
-            <field name="inherit_id" ref="account.view_tax_code_form_vat"/>
+            <field name="inherit_id" ref="account.view_tax_code_form"/>
             <field name="type">form</field>
             <field name="arch" type="xml">
                 <field name="sequence" position="after">
