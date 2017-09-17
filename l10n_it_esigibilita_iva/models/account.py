@@ -6,8 +6,8 @@ from openerp import models, fields, api, _
 from openerp.exceptions import ValidationError
 
 
-class AccountTaxCode(models.Model):
-    _inherit = 'account.tax.code'
+class AccountTax(models.Model):
+    _inherit = 'account.tax'
 
     payability = fields.Selection([
         ('I', 'Immediate payability'),
