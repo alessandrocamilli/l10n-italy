@@ -1,4 +1,4 @@
-id,code,name,type,journal_id
+id,code,name,type,journal_ids
 1,TD01,fattura,out_invoice,
 2,TD04,nota di credito,out_refund,
 3,TD05,nota di debito,in_refund,

@@ -12,6 +12,7 @@
         'view/fiscal_document_type_view.xml',
         'view/res_partner_view.xml',
         'view/account_invoice_view.xml',
+        'view/account_view.xml',
         'data/fiscal.document.type.csv',
         "security/ir.model.access.csv"
     ],

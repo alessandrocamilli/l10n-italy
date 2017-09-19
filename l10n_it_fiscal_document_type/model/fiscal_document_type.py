@@ -15,5 +15,10 @@ class FiscalDocumentType(models.Model):
         ('in_refund', 'Nota di debito')
     ], string="Tipo"
     )
-    journal_id = fields.Many2one(
-        'account.journal', string="Sezionale",)
+    journal_ids = fields.Many2many(
+        'account.journal',
+        'account_journal_fiscal_doc_type_rel',
+        'fiscal_document_type_id',
+        'journal_id',
+        'Sezionali'
+    )

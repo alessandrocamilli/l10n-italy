@@ -9,7 +9,6 @@
                     <field name="code"/>
                     <field name="name"/>
                     <field name="type"/>
-                    <field name="journal_id"/>
                 </tree>
             </field>
         </record>
@@ -23,7 +22,7 @@
                         <field name="code"/>
                         <field name="name"/>
                         <field name="type"/>
-                        <field name="journal_id"/>
+                        <field name="journal_ids" widget="many2many_tags"/>
                     </group>
                 </form>
             </field>
