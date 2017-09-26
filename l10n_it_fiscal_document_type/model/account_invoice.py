@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api
-import logging
-
-logger = logging.getLogger(__name__)
 
 
 class AccountInvoice(models.Model):
@@ -25,8 +22,8 @@ class AccountInvoice(models.Model):
                     fiscal_position=fiscal_position)[0] or False
         return res
 
-    def _get_document_fiscal_type(
-            self, type=None, partner=None, fiscal_position=None, journal=None):
+    def _get_document_fiscal_type(self, type=None, partner=None,
+                                  fiscal_position=None, journal=None):
         dt = []
         doc_id = False
         if not type:
