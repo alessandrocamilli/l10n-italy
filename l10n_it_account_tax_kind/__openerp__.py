@@ -10,16 +10,16 @@
     'version': '8.0.1.0.0',
     'category': 'Localisation/Italy',
     'author': "Odoo Community Association (OCA), Apulia Software s.r.l",
-    'website': 'https://odoo-community.org/',
+    'website': 'https://www.odoo-italia.net/',
     'license': 'AGPL-3',
     'depends': [
         'account',
-        ],
+    ],
     'data': [
         'view/account_tax_kind_view.xml',
         'view/account_tax_view.xml',
         'data/account.tax.kind.csv',
         'security/ir.model.access.csv',
-        ],
+    ],
     'installable': True
 }

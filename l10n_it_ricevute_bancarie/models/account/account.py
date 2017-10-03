@@ -267,6 +267,7 @@ class AccountInvoice(orm.Model):
             # present in some riba_distinta_line
             move_line_model = self.env['account.move.line']
             rdml_model = self.env['riba.distinta.move.line']
+            """
             move_line_ids = move_line_model.search([
                 ('move_id', '=', invoice.move_id.id),
                 ('date_maturity', '!=', False)])
@@ -280,7 +281,7 @@ class AccountInvoice(orm.Model):
                         _('Attention!'),
                         _('Invoice is linked to RI.BA. list nr {riba}').format(
                             riba=riba_line_ids.riba_line_id.distinta_id.name
-                        ))
+                        ))"""
         super(AccountInvoice, self).action_cancel()
 
     @api.v7
