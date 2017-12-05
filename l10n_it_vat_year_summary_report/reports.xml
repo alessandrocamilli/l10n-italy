@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<openerp>
+    <data noupdate="0">
+        <report
+            id="action_report_vat_summary_year"
+            model="account.move"
+            string="Report VAT Summary Year"
+            report_type="qweb-pdf"
+            name="l10n_it_vat_year_summary_report.report_vatyearsummary"
+            file="l10n_it_vat_year_summary_report.report_vatyearsummary"
+            menu="False"
+            auto="False"
+        />
+        <record id="l10n_it_vat_year_summary_report.action_report_vat_summary_year" model="ir.actions.report.xml">
+            <field name="paperformat_id"
+            ref="l10n_it_account.l10n_it_account_a4_portrait"/>
+       </record>
+    </data>
+</openerp>
+
+

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="wizard_vat_year_summary" model="ir.ui.view">
+            <field name="name">wizard.print.vat.year.summary</field>
+            <field name="model">wizard.print.vat.year.summary</field>
+            <field name="arch" type="xml">
+                <form string="Print VAT Year Summary" version="7.0">
+                    <group>
+                        <field name="fiscalyear_id"/>
+                    </group>
+                    <group>
+	                    <field name="amount_generic"/>
+	                    <field name="amount_paid"/>
+                    </group>
+                    <group>
+	                    <field name="print_page_year"/>
+	                    <field name="print_page_from"/>
+                    </group>
+                    <footer>
+                        <button string="Print" name="print_report" type="object" class="oe_highlight" colspan="2"/>
+                        o
+                        <button string="Cancel" special="cancel" class="oe_link"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <act_window id="action_vat_year_summary"
+            key2="client_print_multi"
+            name="Vat Year Summary Report"
+            res_model="wizard.print.vat.year.summary"
+            src_model="wizard.print.vat.year.summary"
+            view_id="wizard_vat_year_summary"
+            view_mode="form" target="new" view_type="form" />
+
+        <menuitem action="action_vat_year_summary"
+            id="menu_vat_year_summary_report"
+            parent="account.menu_account_end_year_treatments"/>
+
+    </data>
+</openerp>
