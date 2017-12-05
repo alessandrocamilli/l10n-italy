@@ -207,7 +207,8 @@ class RibaList(models.Model):
             workflow.trg_create(
                 self.env.user.id, 'riba.distinta', riba_list.id, self._cr)
             riba_list.state = 'draft'
-            riba_list.line_ids.state = 'draft'
+            for line in riba_list.line_ids:
+                line.state = 'draft'
 
 
 class RibaListLine(models.Model):
@@ -330,11 +331,15 @@ class RibaListLine(models.Model):
         for line in self:
             journal = line.distinta_id.config_id.acceptance_journal_id
             total_credit = 0.0
+            period_id = self.pool['account.period'].find(
+                self._cr, self.env.user.id,
+                line.distinta_id.registration_date)
             move_id = move_pool.create(self._cr, self.env.user.id, {
                 'ref': 'Ri.Ba. %s - line %s' % (line.distinta_id.name,
                                                 line.sequence),
                 'journal_id': journal.id,
                 'date': line.distinta_id.registration_date,
+                'period_id': period_id and period_id[0] or False,
             }, self._context)
             to_be_reconciled = []
             for riba_move_line in line.move_line_ids:
