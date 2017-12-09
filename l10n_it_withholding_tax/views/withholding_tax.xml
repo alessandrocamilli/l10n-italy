@@ -39,7 +39,7 @@
                         </group>
                         <group>
                             <field name="active"/>
-                            <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company" readonly="1"/>
+                            <field name="company_id" options="{'no_create': True}" groups="base.group_multi_company"/>
                         </group>
                     </group>
                     <field name="comment"/>
