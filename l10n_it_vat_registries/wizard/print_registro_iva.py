@@ -21,6 +21,8 @@
 #
 #
 
+from datetime import datetime
+
 from openerp import models, fields, api, _
 from openerp.exceptions import Warning as UserError
 
@@ -70,6 +72,9 @@ class WizardRegistroIva(models.TransientModel):
     only_totals = fields.Boolean(
         string='Prints only totals')
     fiscal_page_base = fields.Integer('Last printed page', required=True)
+    page_year = fields.Integer(string="Year",
+                               # default=_get_page_year,
+                               required=True)
 
     @api.onchange('tax_registry_id')
     def on_change_vat_registry(self):
@@ -80,6 +85,22 @@ class WizardRegistroIva(models.TransientModel):
                 self.tax_sign = -1
             else:
                 self.tax_sign = 1
+
+    @api.onchange('period_ids')
+    def onchange_page_year(self):
+        year_dict = {}
+        for period in self.period_ids:
+            period_year = datetime.strptime(period.date_start, '%Y-%m-%d').year
+            if period_year not in year_dict:
+                year_dict[period_year] = True
+        if not year_dict:
+            self.page_year = 0
+            return
+        page_year = year_dict.keys()[0]
+        for year in year_dict:
+            if page_year > year:
+                page_year = year
+        self.page_year = page_year
 
     def print_registro(self, cr, uid, ids, context=None):
         wizard = self.browse(cr, uid, ids[0], context=context)
@@ -103,6 +124,7 @@ class WizardRegistroIva(models.TransientModel):
         else:
             datas_form['tax_registry_name'] = ''
         datas_form['only_totals'] = wizard.only_totals
+        datas_form['page_year'] = wizard.page_year
         report_name = 'l10n_it_vat_registries.report_registro_iva'
         datas = {
             'ids': move_ids,

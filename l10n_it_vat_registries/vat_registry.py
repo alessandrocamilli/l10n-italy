@@ -309,6 +309,7 @@ class Parser(report_sxw.rml_parse):
             'tax_registry_name': data['form'].get('tax_registry_name'),
             'l10n_it_count_fiscal_page_base': data['form'].get(
                 'fiscal_page_base'),
+            'page_year': data['form'].get('page_year'),
         })
         return super(Parser, self).set_context(
             objects, data, ids, report_type=report_type)

@@ -2,8 +2,6 @@
 <openerp>
 <data>
 
-
-
 <template id="report_registro_iva">
     <t t-call="report.html_container">
         <t t-if="registry_type == 'customer'">
@@ -175,6 +173,11 @@
                 </div>
             </div>
         </t>
+    </t>
+    <t inherit_id="l10n_it_account.internal_layout">
+        <xpath expr="//div/ul/li/span[@t-esc]" position="replace">
+            <span t-esc="page_year"/>
+        </xpath>
     </t>
 </template>
 </data>
