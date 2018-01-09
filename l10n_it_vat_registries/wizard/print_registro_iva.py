@@ -94,7 +94,7 @@ class WizardRegistroIva(models.TransientModel):
             if period_year not in year_dict:
                 year_dict[period_year] = True
         if not year_dict:
-            self.page_year = 0
+            self.page_year = datetime.now().strftime('%Y')
             return
         page_year = year_dict.keys()[0]
         for year in year_dict:
