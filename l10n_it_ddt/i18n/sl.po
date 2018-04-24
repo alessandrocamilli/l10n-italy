@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: l10n-italy (8.0)\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-06-24 03:33+0000\n"
-"PO-Revision-Date: 2017-06-26 07:24+0000\n"
-"Last-Translator: Matjaž Mozetič <m.mozetic@matmoz.si>\n"
+"POT-Creation-Date: 2018-02-22 11:45+0000\n"
+"PO-Revision-Date: 2018-01-30 11:08+0000\n"
+"Last-Translator: OCA Transbot <transbot@odoo-community.org>\n"
 "Language-Team: Slovenian (http://www.transifex.com/oca/OCA-l10n-italy-8-0/language/sl/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -163,6 +163,11 @@ msgid "DDT number:"
 msgstr "Št. prevoznega dokumenta:"
 
 #. module: l10n_it_ddt
+#: view:stock.picking.package.preparation:l10n_it_ddt.ddt_stock_picking_package_preparation_search
+msgid "DDT type"
+msgstr "Tip DDT"
+
+#. module: l10n_it_ddt
 #: field:ddt.create.invoice,date:0
 msgid "Date"
 msgstr "Datum"
@@ -237,7 +242,7 @@ msgid "Display Name"
 msgstr "Prikazni naziv"
 
 #. module: l10n_it_ddt
-#: code:addons/l10n_it_ddt/models/stock_picking_package_preparation.py:221
+#: code:addons/l10n_it_ddt/models/stock_picking_package_preparation.py:225
 #, python-format
 msgid "Document {d} has invoice linked"
 msgstr "Dokument {d} je povezan z računom"
@@ -285,6 +290,11 @@ msgid "Group By"
 msgstr "Združi po"
 
 #. module: l10n_it_ddt
+#: field:ddt.create.invoice,group:0
+msgid "Group DDT by partner"
+msgstr ""
+
+#. module: l10n_it_ddt
 #: help:stock.ddt.type,message_summary:0
 msgid ""
 "Holds the Chatter summary (number of messages, ...). This summary is "
@@ -328,11 +338,6 @@ msgstr "Zaračunljivo"
 #: view:stock.picking.package.preparation:l10n_it_ddt.ddt_stock_picking_package_preparation_search
 msgid "Invoiced"
 msgstr "Zaračunano"
-
-#. module: l10n_it_ddt
-#: view:ddt.create.invoice:l10n_it_ddt.view_ddt_create_invoice
-msgid "Invoices created will group DDT by partner"
-msgstr "Ustvarjeni računi bodo združevali prevozni dokument po partnerju"
 
 #. module: l10n_it_ddt
 #: field:stock.ddt.type,message_is_follower:0
@@ -416,10 +421,10 @@ msgid "Methods of Transportation"
 msgstr "Metode prevoza"
 
 #. module: l10n_it_ddt
-#: code:addons/l10n_it_ddt/wizard/ddt_create_invoice.py:86
+#: code:addons/l10n_it_ddt/wizard/ddt_create_invoice.py:90
 #, python-format
-msgid "Move {move} is not invoiceable ({ddt})"
-msgstr "Premik {move} ni zaračunljiv ({ddt})"
+msgid "Move {m} is not invoiceable ({d})"
+msgstr ""
 
 #. module: l10n_it_ddt
 #: field:stock.ddt.type,name:0
@@ -437,7 +442,7 @@ msgid "None"
 msgstr "Nič"
 
 #. module: l10n_it_ddt
-#: code:addons/l10n_it_ddt/models/stock_picking_package_preparation.py:142
+#: code:addons/l10n_it_ddt/models/stock_picking_package_preparation.py:144
 #, python-format
 msgid "Not every picking is in done status"
 msgstr "Nekateri zbirniki nimajo statusa opravljeno"
@@ -593,31 +598,31 @@ msgid "Search DDT"
 msgstr "Iskanje prevoznega dokumenta"
 
 #. module: l10n_it_ddt
-#: code:addons/l10n_it_ddt/wizard/ddt_create_invoice.py:39
+#: code:addons/l10n_it_ddt/wizard/ddt_create_invoice.py:40
 #, python-format
 msgid "Selected DDTs have different Carriage Conditions"
 msgstr "Izbrani prevozni dokumenti imajo različne prevozne pogoje"
 
 #. module: l10n_it_ddt
-#: code:addons/l10n_it_ddt/wizard/ddt_create_invoice.py:45
+#: code:addons/l10n_it_ddt/wizard/ddt_create_invoice.py:46
 #, python-format
 msgid "Selected DDTs have different Descriptions of Goods"
 msgstr "Izbrani prevozni dokumenti imajo različne opise blaga"
 
 #. module: l10n_it_ddt
-#: code:addons/l10n_it_ddt/wizard/ddt_create_invoice.py:58
+#: code:addons/l10n_it_ddt/wizard/ddt_create_invoice.py:59
 #, python-format
 msgid "Selected DDTs have different Methods of Transportation"
 msgstr "Izbrani prevozni dokumenti imajo metode prevoza"
 
 #. module: l10n_it_ddt
-#: code:addons/l10n_it_ddt/wizard/ddt_create_invoice.py:51
+#: code:addons/l10n_it_ddt/wizard/ddt_create_invoice.py:52
 #, python-format
 msgid "Selected DDTs have different Reasons for Transportation"
 msgstr "Izbrani prevozni dokumenti imajo različne razloge prevoza"
 
 #. module: l10n_it_ddt
-#: code:addons/l10n_it_ddt/wizard/ddt_create_invoice.py:65
+#: code:addons/l10n_it_ddt/wizard/ddt_create_invoice.py:66
 #, python-format
 msgid "Selected DDTs have different parcels"
 msgstr "Izbrani prevozni dokumenti imajo različne pošiljke"

@@ -10,6 +10,7 @@
 
 
 from openerp import models, fields, api, exceptions, _
+from openerp.exceptions import ValidationError
 
 
 class StockPickingCarriageCondition(models.Model):
@@ -64,6 +65,10 @@ class StockDdtType(models.Model):
     company_id = fields.Many2one(
         'res.company', string='Company',
         default=lambda self: self.env.user.company_id, )
+    restrict_pickings = fields.Boolean(
+        help='Pickings already in other DDTs cannot be added'
+             ' to DDTs having this type',
+        default=True)
 
 
 class StockPickingPackagePreparation(models.Model):
@@ -77,7 +82,7 @@ class StockPickingPackagePreparation(models.Model):
 
     ddt_type_id = fields.Many2one(
         'stock.ddt.type', string='DdT Type', default=_default_ddt_type)
-    ddt_number = fields.Char(string='DdT Number')
+    ddt_number = fields.Char(string='DdT Number', copy=False)
     partner_invoice_id = fields.Many2one('res.partner')
     partner_shipping_id = fields.Many2one('res.partner')
     carriage_condition_id = fields.Many2one(
@@ -121,6 +126,19 @@ class StockPickingPackagePreparation(models.Model):
                 self.partner_id.transportation_method_id.id \
                 if self.partner_id.transportation_method_id else False
 
+    @api.constrains('picking_ids')
+    def _check_multiple_picking_ids(self):
+        for package in self:
+            if not package.ddt_type_id.restrict_pickings:
+                continue
+            for picking in package.picking_ids:
+                other_ddts = picking.ddt_ids - package
+                if other_ddts:
+                    raise ValidationError(
+                        _("The picking %s is already in DDT %s")
+                        % (picking.name_get()[0][1],
+                           other_ddts.name_get()[0][1]))
+
     @api.multi
     def action_put_in_pack(self):
         for package in self:
@@ -130,8 +148,10 @@ class StockPickingPackagePreparation(models.Model):
                     _("Impossible to put in pack a package without details"))
             # ----- Assign ddt number if ddt type is set
             if package.ddt_type_id and not package.ddt_number:
-                package.ddt_number = package.ddt_type_id.sequence_id.get(
-                    package.ddt_type_id.sequence_id.code)
+                package.ddt_number = (
+                    package.ddt_type_id.sequence_id.next_by_id(
+                        package.ddt_type_id.sequence_id.id)
+                )
         return super(StockPickingPackagePreparation, self).action_put_in_pack()
 
     @api.multi
@@ -142,8 +162,10 @@ class StockPickingPackagePreparation(models.Model):
                     _("Not every picking is in done status"))
         for package in self:
             if not package.ddt_number:
-                package.ddt_number = package.ddt_type_id.sequence_id.get(
-                    package.ddt_type_id.sequence_id.code)
+                package.ddt_number = (
+                    package.ddt_type_id.sequence_id.next_by_id(
+                        package.ddt_type_id.sequence_id.id)
+                )
         self.write({'state': 'done', 'date_done': fields.Datetime.now()})
         return True
 
