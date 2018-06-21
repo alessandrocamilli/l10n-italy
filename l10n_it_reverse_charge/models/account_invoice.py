@@ -208,7 +208,7 @@ class AccountInvoice(models.Model):
         payment_debit_line_data = self.rc_debit_line_vals()
         # Avoid payment lines without amounts
         if payment_credit_line_data['debit'] or \
-            payment_credit_line_data['credit']:
+                payment_credit_line_data['credit']:
             rc_payment.line_ids = [
                 (0, 0, payment_debit_line_data),
                 (0, 0, payment_credit_line_data),
