@@ -206,10 +206,13 @@ class AccountInvoice(models.Model):
             rc_type.payment_journal_id)
 
         payment_debit_line_data = self.rc_debit_line_vals()
-        rc_payment.line_ids = [
-            (0, 0, payment_debit_line_data),
-            (0, 0, payment_credit_line_data),
-        ]
+        # Avoid payment lines without amounts
+        if payment_credit_line_data['debit'] or \
+            payment_credit_line_data['credit']:
+            rc_payment.line_ids = [
+                (0, 0, payment_debit_line_data),
+                (0, 0, payment_credit_line_data),
+            ]
         return rc_payment
 
     def partially_reconcile_supplier_invoice(self, rc_payment):
