@@ -184,8 +184,12 @@ class BankingExportSepaCbiWizard(models.TransientModel):
             CtrlSum_node.getparent().remove(CtrlSum_node)
             self.generate_party_block(
                 payment_info_2_0, 'Dbtr', 'B',
-                self.payment_order_ids[0].mode.bank_id,
-                gen_args)
+                'self.payment_order_ids[0].mode.bank_id.partner_id.'
+                'name',
+                'self.payment_order_ids[0].mode.bank_id.acc_number',
+                'self.payment_order_ids[0].mode.bank_id.bank.bic or '
+                'self.payment_order_ids[0].mode.bank_id.bank_bic',
+                {'self': self}, gen_args)
             charge_bearer_2_24 = etree.SubElement(payment_info_2_0, 'ChrgBr')
             charge_bearer_2_24.text = self.charge_bearer
             transactions_count_2_4 = 0
@@ -236,7 +240,8 @@ class BankingExportSepaCbiWizard(models.TransientModel):
                         % (line.ml_inv_ref.number, line.name))
                 self.generate_party_block(
                     credit_transfer_transaction_info_2_27, 'Cdtr', 'C',
-                    line.bank_id, gen_args)
+                    'line.partner_id.name', 'line.bank_id.acc_number',
+                    'line.bank_id.bank.bic', {'line': line}, gen_args)
                 # Add info for Cross Border payment
                 partner_creditor = line.partner_id
                 creditor_node = credit_transfer_transaction_info_2_27\
