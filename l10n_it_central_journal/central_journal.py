@@ -39,7 +39,7 @@ class Parser(report_sxw.rml_parse):
                 'progressive_credit': end_credit,
             }
             res = fiscalyear_obj.write(
-                self.cr, self.uid, [fiscalyear.id], print_info)
+                self.cr, self.uid, [fiscalyear_id.id], print_info)
         return res
 
     def __init__(self, cr, uid, name, context):

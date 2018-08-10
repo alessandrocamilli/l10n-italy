@@ -22,7 +22,6 @@ bonifico in Italia, come ad esempio la presenza obbligatoria dell’ABI della
 banca di addebito contenuto nel campo “MmbId” che è invece facoltativo
 nel tracciato ISO. 
 
-
 Configuration
 =============
 
