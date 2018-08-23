@@ -89,7 +89,11 @@
                                     <th class="left_without_line">DT FATT.</th>
                                     <th class="left_without_line">NUM FATT.</th>
                                     <th class="left_without_line">RAGIONE SOCIALE</th>
-                                    <th class="left_without_line">P.IVA</th>
+                                    <th class="left_without_line">P.IVA
+                                        <t t-if="fiscalcode == True">
+                                            <br/>Cod.Fiscale
+                                        </t>
+                                    </th>
                                 </t>
                                 <th class="left_without_line"></th>
                                 <th class="right_without_line">TOTALE</th>
@@ -111,10 +115,24 @@
                     </thead>
                     
                     <t t-set="counter" t-value="0"/>
+                    <t t-set="sv_journal_id" t-value="False"/>
                     <tbody>
                         <t t-foreach="get_move(data['ids'])" t-as="move">
                             <t t-set="counter" t-value="counter + 1"/>
                             <t t-foreach="tax_lines(move)" t-as="line">
+
+                                <t t-if="order == 'journal_date_name'">
+                                    <t t-if="move.journal_id.id != sv_journal_id">
+	                                    <tr>
+	                                        <td colspan='9'>
+	                                            <h3 style="page-break-inside: avoid;border-top:1px solid;border-bottom:1px solid;" 
+	                                            t-esc="move.journal_id.name"/>
+	                                        </td>
+	                                    </tr>
+                                    </t>
+                                </t>
+                                <t t-set="sv_journal_id" t-value="move.journal_id.id"/>
+
                                 <t t-if="print_details > 0 ">
                                     <t t-set="line_class_left" t-value="left_without_line"/>
                                     <t t-set="line_class_right" t-value="right_without_line"/>
@@ -147,7 +165,12 @@
                                                 <!-- Ragione sociale -->
                                                 <td class="left_without_line_bold"><div style="page-break-inside: avoid" t-esc="move.partner_id.name"/></td>
                                                 <!-- PIVA -->
-                                                <td class="left_without_line_bold"><div style="page-break-inside: avoid" t-esc="move.partner_id.vat"/></td>
+                                                <td class="left_without_line_bold">
+                                                    <div style="page-break-inside: avoid" t-esc="move.partner_id.vat"/>
+                                                    <t t-if="fiscalcode == True and move.partner_id.fiscalcode">
+                                                        <div style="page-break-inside: avoid" t-esc="move.partner_id.fiscalcode"/>
+                                                    </t>
+                                                </td>
                                             </t>
                                             <td class="left_without_line"></td>
                                             <!-- totale -->
