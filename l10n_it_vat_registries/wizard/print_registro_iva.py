@@ -76,13 +76,10 @@ class WizardRegistroIva(models.TransientModel):
     only_totals = fields.Boolean(
         string='Prints only totals')
     fiscal_page_base = fields.Integer('Last printed page', required=True)
-<<<<<<< HEAD
     page_year = fields.Integer(string="Year",
                                # default=_get_page_year,
                                required=True)
-=======
     fiscalcode = fields.Boolean(string='Print fiscalcode')
->>>>>>> f9e627e4... Options to print fiscalcode of the partner
 
     @api.onchange('tax_registry_id')
     def on_change_vat_registry(self):
