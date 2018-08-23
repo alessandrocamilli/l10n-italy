@@ -308,6 +308,7 @@ class Parser(report_sxw.rml_parse):
             'only_totals': data['form'].get('only_totals'),
             'order': data['form'].get('order'),
             'tax_registry_name': data['form'].get('tax_registry_name'),
+            'fiscalcode': data['form'].get('fiscalcode'),
             'l10n_it_count_fiscal_page_base': data['form'].get(
                 'fiscal_page_base'),
             'page_year': data['form'].get('page_year'),

@@ -19,6 +19,7 @@
                         <field name="type"/>
                         <field name="tax_sign" />
                         <field name="only_totals" />
+                        <field name="fiscalcode" />
                         <field name="fiscal_page_base"/>
                         <field name="page_year" widget="char"/>
                         <newline/>
