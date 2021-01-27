@@ -12,6 +12,7 @@ class TestDocType(TransactionCase):
         self.journalrec = self.env['account.journal'].search(
             [('type', '=', 'sale')])[0]
         self.TD01 = self.env.ref('l10n_it_fiscal_document_type.1')
+        self.TD04 = self.env.ref('l10n_it_fiscal_document_type.2')
         self.inv_model = self.env['account.invoice']
         self.partner3 = self.env.ref('base.res_partner_3')
 
@@ -27,3 +28,17 @@ class TestDocType(TransactionCase):
             'partner_id': self.partner3.id
         })
         self.assertEqual(invoice2.fiscal_document_type_id.id, self.TD01.id)
+
+    def test_doc_type_refund(self):
+        self.TD01.journal_ids = [self.journalrec.id]
+        invoice = self.inv_model.create({
+            'partner_id': self.partner3.id
+        })
+        invoice._set_document_fiscal_type()
+        refund = invoice.refund(
+            invoice.date_invoice,
+            invoice.date,
+            'refund test',
+            invoice.journal_id.id
+        )
+        self.assertEqual(refund.fiscal_document_type_id.id, self.TD04.id)
