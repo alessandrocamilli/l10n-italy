@@ -273,10 +273,10 @@ class EFatturaOut:
             if line.display_type in ("line_section", "line_note"):
                 # find a non-zero tax, if possible
                 tax_lines = line.move_id.line_ids.filtered(
-                    lambda line: line.tax_line_id and line.price_total
+                    lambda line: line.tax_ids and line.price_total
                 )
                 if tax_lines:
-                    return tax_lines[0].tax_line_id
+                    return tax_lines[0].tax_ids[0]
             return line.tax_ids[0]
 
         if self.partner_id.commercial_partner_id.is_pa:
